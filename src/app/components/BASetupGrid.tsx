@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import {
   FolderRegular,
   EditRegular,
@@ -29,6 +30,7 @@ import {
 } from "@fluentui/react-components";
 import BAScreenHeader from "./BAScreenHeader";
 import { BAButton } from "./BAButton";
+import { GeneralCoreService } from "../config/GeneralCoreService";
 
 const items = [
   {
@@ -96,9 +98,27 @@ const rows = [
 ]
 
 export const BASetupGrid = (props: any) => {
-  const { title, addEdit, config } = props
+  const { controller,
+    addEdit,
+    rowMenu,
+    title,
+    config,
+    primaryKey,
+    FormName,
+    module } = props
   const keyboardNavAttr = useArrowNavigationGroup({ axis: "grid" });
-  const [gridCols, setGridCols] = React.useState([...config]);
+  const [gridCols, setGridCols] = useState([...config]);
+  const [datasource, setDatasource] = useState<any>([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [gridSearchObj, setGridSearchObj] = useState({});
+  const [property, setProperty] = useState({
+    loading: false,
+    deleteLoading: false,
+    isSelecting: false,
+    isColumnEditing: false,
+    isPosting: false,
+  });
+
   const focusableGroupAttr = useFocusableGroup({
     tabBehavior: "limited-trap-focus",
   });
@@ -115,13 +135,13 @@ export const BASetupGrid = (props: any) => {
       },
 
     ]
-  const getLabelAndColor = (x: any,item:any) => {
-    console.log(item[x.field]);
+  const getLabelAndColor = (x: any, item: any) => {
     
+
     let color = ''
     let label = ''
-    switch(x.field){
-      case 'IsActive' :
+    switch (x.field) {
+      case 'IsActive':
         color = item[x.field] ? 'green' : 'red'
         label = item[x.field] ? 'Active' : 'InActive'
         break;
@@ -130,16 +150,44 @@ export const BASetupGrid = (props: any) => {
     }
     return { label, color }
   }
-  const renderTag = (x: any,item:any) => {
-   
-    
-    const result = getLabelAndColor(x,item)
+  const renderTag = (x: any, item: any) => {
+
+
+    const result = getLabelAndColor(x, item)
     if (result) {
       return <Tag style={{ color: result.color }} icon={<CalendarMonthRegular />}>{result.label}</Tag>
     }
 
   }
+  const SearchCriteria = {
+    pageSize: 10,
+    pageNo: 1,
+    selector: config.map((x:any) => x.field).join(","),
+  };
+  let getData = (SearchObj?: any) => {
+    setProperty({ ...property, loading: true });
 
+    let obj = {
+      ...SearchCriteria,
+      SearchBy: JSON.stringify(SearchObj ?? gridSearchObj),
+    };
+
+    GeneralCoreService(`${module}/${FormName}`)
+      .Register(obj)
+      .then((res:any) => {
+        console.log([...res.data.rows]);
+        setDatasource([...res.data.rows]);
+        setTotalRecords(res.data.TotalCount);
+        setProperty({ ...property, loading: false });
+      })
+      .catch((err) => {
+        setProperty({ ...property, loading: false });
+      });
+  };
+  React.useEffect(() => {
+    getData();
+ 
+  }, []);
   return (
 
     <div>
@@ -194,7 +242,7 @@ export const BASetupGrid = (props: any) => {
               {config.map((x: any, ind: any) => (
                 <TableCell tabIndex={0} role="gridcell">
                   {/* {x.field === 'IsActive' && renderTag(x,item)} */}
-               {   renderTag(x,item)}
+                  {renderTag(x, item)}
                   {item[x.field]}
                 </TableCell>
               ))}

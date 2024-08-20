@@ -1,8 +1,13 @@
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css"; // Your global CSS
 import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
- 
+import { Provider } from "react-redux";
+import store from "./config/redux/store";
+import { Providers } from "./providers";
+
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -18,15 +23,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-      {/* <link
-  rel="stylesheet"
-  href="https://res-1.cdn.office.net/files/fabric-cdn-prod_20230815.002/office-ui-fabric-core/11.1.0/css/fabric.min.css"
-/> */}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gridlex/2.7.1/gridlex.min.css"></link>
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gridlex/2.7.1/gridlex.min.css"></link>
       </head>
-      <body className={inter.className}>
-        {children}
+  
+
+
+      <body>
+        <Providers>
+          {children}
+        </Providers>
       </body>
+      
     </html>
   );
 }

@@ -22,7 +22,7 @@ import {
     makeStyles,
     tokens,
     useId,
-     
+
 } from "@fluentui/react-components";
 import {
     Board20Filled,
@@ -62,6 +62,7 @@ import { AppBar } from "./appbar/page";
 import { FontIcon } from '@fluentui/react/lib/Icon';
 import { mergeStyles } from '@fluentui/react/lib/Styling';
 import { menues } from "./Menus";
+
 initializeIcons();
 
 const useStyles = makeStyles({
@@ -138,9 +139,9 @@ const Dashboard = ({
     };
     const renderSwitchWithToolTip = () => {
         return (
-           
+
             <Tooltip content="toggle" relationship="label" >
-                 <Switch  onChange={(e:any)=>e.target.value && setToggle(!toggle)}  />
+                <Switch onChange={(e: any) => e.target.value && setToggle(!toggle)} />
                 {/* <ToggleLeft48Filled onClick={() => setToggle(!toggle)} /> */}
             </Tooltip>
         );
@@ -158,6 +159,7 @@ const Dashboard = ({
     }, [])
     return (
         <FluentProvider theme={toggle ? teamsDarkTheme : teamsLightTheme}>
+     
             <div >
 
                 {isClient && <div className={styles.root}>
@@ -166,62 +168,72 @@ const Dashboard = ({
                         defaultSelectedCategoryValue="1"
                         open={isOpen}
                         type={type}
+                        style={{height:'100vh'}}
                     >
-                       <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-                       <NavDrawerHeader>{renderHamburgerWithToolTip()}</NavDrawerHeader>
-                       <NavDrawerHeader >{renderSwitchWithToolTip()}</NavDrawerHeader>
-                       </div>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <NavDrawerHeader>{renderHamburgerWithToolTip()}</NavDrawerHeader>
+                            <NavDrawerHeader >{renderSwitchWithToolTip()}</NavDrawerHeader>
+                        </div>
 
-                        <NavDrawerBody>
+                        <NavDrawerBody >
                             <AppItem
                                 icon={<PersonCircle32Regular />}
                                 as="a"
                                 href={linkDestination}
+                 
                             >
-                               Admin
+                                Admin
                             </AppItem>
                             <NavItem href={linkDestination} icon={<Dashboard1 />} value="1">
                                 Dashboard
                             </NavItem>
-
                             {
                                 menues.map((el: any, i: any) => (
-                                    <>
-                                        <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
-                                            {el.icon && <span style={{ marginTop: '4px' }}> <FontIcon aria-label="Compass" iconName={el.icon} className={iconClass} /></span>}
-                                            <NavSectionHeader >{el.title}</NavSectionHeader>
-                                        </div>
-                                        {el.children.length > 0 &&
-                                            el.children.map((x: any, ind: any) => (
+                                    <NavCategory value={i}>
+                                        <NavCategoryItem  style={{backgroundColor:tokens.colorNeutralBackground1Pressed}} icon={<JobPostings />}>
+                                            {el.title}
+                                        </NavCategoryItem>
+                                        <NavSubItemGroup>
+                                            {el.children.map((x: any, ind: any) => (
                                                 <NavCategory key={ind} value={x.title + i}>
-                                                    <NavCategoryItem icon={''} >
+                                                    <NavCategoryItem style={{fontSize:'14px'}} icon={''}>
                                                         {x.title}
+
                                                     </NavCategoryItem>
-                                                    {x.child.length > 0 &&
-                                                        x.child.map((z: any, ix: any) => (
-                                                            <NavSubItemGroup >
-                                                                <NavSubItem href={z.route} value={z.name + i} >
-                                                                    {z.name}
-                                                                </NavSubItem>
+                                                    {x.child.length && x.child.map((z: any, index: any) => (
+                                                        <NavSubItemGroup key={index}>
+                                                            {/* colorNeutralForegroundDisabled */}
+                                                            <NavSubItem style={{backgroundColor:tokens.colorNeutralBackground1Pressed,fontSize:'13px'}} href={z.route} value={z.name} >
+                                                                {z.name}
+                                                            </NavSubItem>
 
-                                                            </NavSubItemGroup>
-                                                        ))}
+                                                        </NavSubItemGroup>
+                                                    ))}
+
+
                                                 </NavCategory>
+                                            ))}
 
-                                            )
 
-                                            )}
+                                            {/* <NavSubItem href={linkDestination} value="7">
+                                                Openings
+                                            </NavSubItem>
+                                            <NavSubItem href={linkDestination} value="8">
+                                                Submissions
+                                            </NavSubItem> */}
+                                        </NavSubItemGroup>
+                                    </NavCategory>
 
-                                    </>
                                 ))
                             }
+                            
 
                         </NavDrawerBody>
                     </NavDrawer>
                     <div className={styles.content}>
 
-                    {/* <AppBar  /> */}
-                    {/* <AppBar openHam={isOpen} icon={renderHamburgerWithToolTip()} /> */}
+                        {/* <AppBar  /> */}
+                        {/* <AppBar openHam={isOpen} icon={renderHamburgerWithToolTip()} /> */}
                         {children}
 
                     </div>

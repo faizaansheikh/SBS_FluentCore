@@ -35,8 +35,13 @@ export default function Users() {
     return <>
         <div>
             <BASetupGrid
+                // ControlId={Id}
                 title={'Users'}
                 config={UsersConfig}
+                FormName={"Users"}
+                module={"Security"}
+                primaryKey={"Id"}
+                controller={"Security/Users"}
                 addEdit={
                     (
 
