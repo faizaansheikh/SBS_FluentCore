@@ -8,7 +8,7 @@ export const menues = [
               
                 child:[
                     { name: 'Company Setup', route: '/' },
-                    { name: 'Users', route: '/' },
+                    { name: 'Users', route: '/dashboard/administration/users' },
                     { name: 'Roles', route: '/' },
                     { name: 'Approval Workflow', route: '/' },
                     { name: 'Period', route: '/' },

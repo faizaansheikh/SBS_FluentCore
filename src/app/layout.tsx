@@ -6,6 +6,7 @@ import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
 import { Provider } from "react-redux";
 import store from "./config/redux/store";
 import { Providers } from "./providers";
+import Login from "./login/page";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body>
         <Providers>
           {children}
+       
         </Providers>
       </body>
       

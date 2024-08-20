@@ -19,7 +19,35 @@ import { LoginApi } from "../config/apimethods";
 
 import store from '../config/redux/store'
 import Image from "next/image";
-import { Input, Label } from "@fluentui/react-components";
+import {
+    Input,
+    Label,
+    makeStyles,
+    useId,
+    tokens,
+    mergeClasses,
+    Switch,
+    FluentProvider,
+    teamsLightTheme,
+} from "@fluentui/react-components";
+const useStyles = makeStyles({
+    root: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",  
+        maxWidth: "100%",
+        "> div": { display: "flex", flexDirection: "column", gap: "0px" },
+    },
+    field: {
+        display: "grid",
+        gridRowGap: tokens.spacingVerticalXXS,
+        marginTop: '14px',
+        marginLeft:'6px',
+        marginRight:'6px',
+        // padding: tokens.spacingHorizontalMNudge,
+    },
+  
+});
 export default function Login() {
     const [model, setModel] = useState<any>({});
     const [property, setProperty] = useState({
@@ -189,7 +217,7 @@ export default function Login() {
                         localStorage.setItem("savedCredentials", credentials);
                     }
                     dispatch(add(res.data));
-                    navigate.push("/Dashboard");
+                    navigate.push("/dashboard");
                 } else {
                     alert(res.error);
                     setProperty({ ...property, loading: false });
@@ -203,7 +231,7 @@ export default function Login() {
     };
     useEffect(() => {
         if (loginDT.auth) {
-            navigate.push("/Dashboard");
+            navigate.push("/dashboard");
         } else {
             let credentials = localStorage.getItem("savedCredentials");
             if (credentials) {
@@ -212,105 +240,122 @@ export default function Login() {
             }
         }
     }, []);
+   
 
+    const styles = useStyles();
 
     return (
         <>
+            <FluentProvider theme={teamsLightTheme}>
 
-            <div
-                style={{
-                    backgroundImage: `url(${background.src})`,
-                    minHeight: '100%',
-                    position: 'fixed',
-                    right: '0px',
-                    left: '0px',
-                    height: '100vh',
-                    backgroundPosition: 'cover',
-                    backgroundSize: 'cover'
-                }}
-            >
+
+
                 <div
                     style={{
+                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${background.src})`,
+                        minHeight: '100%',
+                        position: 'fixed',
+                        right: '0px',
+                        left: '0px',
                         height: '100vh',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        flexDirection: 'column'
+                        backgroundPosition: 'cover',
+                        backgroundSize: 'cover',
+                        backdropFilter:''
                     }}
-                // className="h-100 semi-transparent d-flex justify-content-center align-items-center flex-column"
                 >
                     <div
-                        // component="form"
-                        onSubmit={(e: any) => {
-                            e.preventDefault();
-                            loginUser();
+                        style={{
+                            height: '100vh',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            zIndex: 200
                         }}
-
-                        style={{ width: 320, height: 400, backgroundColor: 'white', padding: '4px' }}
+                    // className="h-100 semi-transparent d-flex justify-content-center align-items-center flex-column"
                     >
                         <div
-                            style={{
-                                textAlign: 'center', marginTop: '16px', paddingBottom: '3px', display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
+                            // component="form"
+                            onSubmit={(e: any) => {
+                                e.preventDefault();
+                                loginUser();
                             }}
+
+                            style={{ width: 320, height: 400, backgroundColor: 'white', padding: '4px', zIndex: 5000 ,borderBottom:'6px solid yellow'}}
                         >
-                            <Image width={150} src={logo} alt="Finosys PVT LTD" />
-                        </div>
-
-                        <p style={{ textAlign: 'center' }}>
-                            Login
-                        </p>
-                      
-                            <div style={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
-                                <Label style={{ paddingInlineEnd: "10px", textWrap: 'nowrap', width: '100%' }}>
-                                  Username
-                                </Label>
-                          
-                                <Input
-                                    appearance="underline"
-                                    style={{ width: '100%' }}
-                                    type={'text'}
-                                    // id={inputId}
-                                    // id={beforeId}
-                                    // value={value}
-                                    // onChange={onChange}
-                                    // disabled={disabled}
-                                />
-
+                            <div
+                                style={{
+                                    textAlign: 'center', marginTop: '30px', paddingBottom: '3px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Image width={150} src={logo} alt="Finosys PVT LTD" />
                             </div>
-                           
-                   
-                        <div style={{ padding: '0px 4px' }}>
-                            <BAInput
-                                type="password"
-                                required={true}
-                                value={model.Password}
-                                onChange={(e: any) =>
-                                    setModel({ ...model, Password: e.target.value })
-                                }
-                                label="Password"
-                            />
-                        </div>
-                        <div style={{ padding: '0px 4px' }}>
-                            {/* <BASwitch
+
+                            <p style={{ textAlign: 'center', fontSize: '29px', marginTop: '15px', fontWeight: 300 }}>
+                                Login
+                            </p>
+                            <div style={{ padding: '0px 10px 0px 7px' }}>
+
+
+                                <div className={styles.field}>
+                                    <Label>
+                                        Username
+                                    </Label>
+                                    <Input
+                                        appearance="underline"
+                                        style={{ fontSize: '15px' }}
+                                        value={model.UserName}
+                                        required={true}                                      
+                                        onChange={(e) =>
+                                          setModel({ ...model, UserName: e.target.value })
+                                        }
+                                    />
+                                </div>
+
+                                <div className={styles.field}>
+                                    <Label>
+                                        Password
+                                    </Label>
+                                    <Input
+                                        appearance="underline"
+                                        type="password"
+                                        required={true}
+                                        value={model.Password}
+                                        onChange={(e) =>
+                                          setModel({ ...model, Password: e.target.value })
+                                        }
+                                    />
+                                </div>
+
+
+
+
+                                <div className={styles.field}>
+                                    <Switch label="Save Password" />
+                                    {/* <BASwitch
                 onChange={(e:any) => setSavePassword(e.target.checked)}
                 label="Save Password"
               /> */}
-                        </div>
-                        <div style={{ padding: '0px 4px' }}>
-                            <BAButton
-                                type="submit"
-                                loading={property.loading}
-                                onClick={loginUser}
-                                label="Login"
-                                fullWidth={true}
-                            />
+                                </div>
+                                <div  style={{marginTop:'10px',display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                                    <BAButton
+                                        style={{ fontSize: '20px', fontWeight: 'lighter', backgroundColor: '#4f52b2', width: 280, color: 'white', padding: '6px 0px 7px 0px', marginTop: '10px' }}
+                                        type="submit"
+                                        loading={property.loading}
+                                        onClick={loginUser}
+                                        label="Login"
+                                        fullWidth={true}
+                                    />
+                                </div>
+                               
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
+            </FluentProvider>
         </>
     );
 }

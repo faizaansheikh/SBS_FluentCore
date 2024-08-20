@@ -18,7 +18,7 @@ import {
   useIsOverflowItemVisible,
   useOverflowMenu,
 } from "@fluentui/react-components";
-
+import { ArrowExitFilled, TextCollapseFilled } from "@fluentui/react-icons";
 const useStyles = makeStyles({
   container: {
     display: "flex",
@@ -51,58 +51,65 @@ const useStyles = makeStyles({
   },
 });
 
-export const AppBar = () => {
+export const AppBar = (props:any) => {
+  const{openHam,setOpenHam} = props
   const styles = useStyles();
 
   return (
-    <Overflow padding={40}>
-      <div className={mergeClasses(styles.container, styles.resizableArea)}>
-        <OverflowItem id={"1"} groupId={"1"}>
-          <Button>Item 1</Button>
-        </OverflowItem>
-        <OverflowGroupDivider groupId={"1"} />
-        <OverflowItem id={"2"} groupId={"2"}>
-          <Button>Item 2</Button>
-        </OverflowItem>
-        <OverflowGroupDivider groupId={"2"} />
-        <OverflowItem id={"3"} groupId={"3"}>
-          <Button>Item 3</Button>
-        </OverflowItem>
-        <OverflowItem id={"4"} groupId={"3"}>
-          <Button>Item 4</Button>
-        </OverflowItem>
-        <OverflowGroupDivider groupId={"3"} />
-        <OverflowItem id={"5"} groupId={"4"}>
-          <Button>Item 5</Button>
-        </OverflowItem>
-        <OverflowItem id={"6"} groupId={"4"}>
-          <Button>Item 6</Button>
-        </OverflowItem>
-        <OverflowItem id={"7"} groupId={"4"}>
-          <Button>Item 7</Button>
-        </OverflowItem>
-        <OverflowGroupDivider groupId={"4"} />
-        <OverflowItem id={"8"} groupId={"5"}>
-          <Button>Item 8</Button>
-        </OverflowItem>
-        <OverflowMenu
-          itemIds={[
-            "1",
-            "divider-1",
-            "2",
-            "divider-2",
-            "3",
-            "4",
-            "divider-3",
-            "5",
-            "6",
-            "7",
-            "divider-4",
-            "8",
-          ]}
-        />
-      </div>
-    </Overflow>
+    // <Overflow padding={40}>
+    //   <div className={mergeClasses(styles.container, styles.resizableArea)}>
+    //     <OverflowItem id={"1"} groupId={"1"}>
+    //       <Button>Item 1</Button>
+    //     </OverflowItem>
+    //     <OverflowGroupDivider groupId={"1"} />
+    //     <OverflowItem id={"2"} groupId={"2"}>
+    //       <Button>Item 2</Button>
+    //     </OverflowItem>
+    //     <OverflowGroupDivider groupId={"2"} />
+    //     <OverflowItem id={"3"} groupId={"3"}>
+    //       <Button>Item 3</Button>
+    //     </OverflowItem>
+    //     <OverflowItem id={"4"} groupId={"3"}>
+    //       <Button>Item 4</Button>
+    //     </OverflowItem>
+    //     <OverflowGroupDivider groupId={"3"} />
+    //     <OverflowItem id={"5"} groupId={"4"}>
+    //       <Button>Item 5</Button>
+    //     </OverflowItem>
+    //     <OverflowItem id={"6"} groupId={"4"}>
+    //       <Button>Item 6</Button>
+    //     </OverflowItem>
+    //     <OverflowItem id={"7"} groupId={"4"}>
+    //       <Button>Item 7</Button>
+    //     </OverflowItem>
+    //     <OverflowGroupDivider groupId={"4"} />
+    //     <OverflowItem id={"8"} groupId={"5"}>
+    //       <Button>Item 8</Button>
+    //     </OverflowItem>
+    //     <OverflowMenu
+    //       itemIds={[
+    //         "1",
+    //         "divider-1",
+    //         "2",
+    //         "divider-2",
+    //         "3",
+    //         "4",
+    //         "divider-3",
+    //         "5",
+    //         "6",
+    //         "7",
+    //         "divider-4",
+    //         "8",
+    //       ]}
+    //     />
+    //   </div>
+    // </Overflow>
+    <div style={{backgroundColor:tokens.colorNeutralBackground1Pressed,width:'100%',height:'50px',marginBottom:'10px', 
+      borderRadius: "8px",display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+     {!openHam ? <TextCollapseFilled onClick={()=>setOpenHam(true)} style={{fontSize:'30px',marginLeft:'10px',cursor:'pointer'}}/>:<div></div>} 
+      <ArrowExitFilled style={{fontSize:'30px',marginRight:'10px',cursor:'pointer'}}/>
+     
+    </div>
   );
 };
 

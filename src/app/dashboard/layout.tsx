@@ -62,6 +62,7 @@ import { AppBar } from "./appbar/page";
 import { FontIcon } from '@fluentui/react/lib/Icon';
 import { mergeStyles } from '@fluentui/react/lib/Styling';
 import { menues } from "./Menus";
+import { useRouter } from "next/navigation";
 
 initializeIcons();
 
@@ -118,6 +119,7 @@ const Dashboard = ({
 }: Readonly<{
     children: React.ReactNode;
 }>) => {
+    const router = useRouter();
     const styles = useStyles();
 
     const typeLabelId = useId("type-label");
@@ -153,7 +155,9 @@ const Dashboard = ({
         // margin: '25px 0px',
     });
     const [isClient, setIsClient] = React.useState(false)
-
+    const changeRoute = (route:any) => {
+        router.push(route)
+    }
     React.useEffect(() => {
         setIsClient(true)
     }, [])
@@ -184,7 +188,7 @@ const Dashboard = ({
                             >
                                 Admin
                             </AppItem>
-                            <NavItem href={linkDestination} icon={<Dashboard1 />} value="1">
+                            <NavItem onClick={()=>changeRoute('/dashboard')}  icon={<Dashboard1 />} value="1">
                                 Dashboard
                             </NavItem>
                             {
@@ -203,7 +207,7 @@ const Dashboard = ({
                                                     {x.child.length && x.child.map((z: any, index: any) => (
                                                         <NavSubItemGroup key={index}>
                                                             {/* colorNeutralForegroundDisabled */}
-                                                            <NavSubItem style={{backgroundColor:tokens.colorNeutralBackground1Pressed,fontSize:'13px'}} href={z.route} value={z.name} >
+                                                            <NavSubItem style={{backgroundColor:tokens.colorNeutralBackground1Pressed,fontSize:'13px'}} onClick={()=>changeRoute(z.route)} value={z.name} >
                                                                 {z.name}
                                                             </NavSubItem>
 
@@ -233,7 +237,8 @@ const Dashboard = ({
                     <div className={styles.content}>
 
                         {/* <AppBar  /> */}
-                        {/* <AppBar openHam={isOpen} icon={renderHamburgerWithToolTip()} /> */}
+                        <AppBar openHam={isOpen} setOpenHam={setIsOpen} icon={renderHamburgerWithToolTip()} />
+                        
                         {children}
 
                     </div>
