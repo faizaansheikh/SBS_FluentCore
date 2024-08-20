@@ -63,6 +63,7 @@ import { FontIcon } from '@fluentui/react/lib/Icon';
 import { mergeStyles } from '@fluentui/react/lib/Styling';
 import { menues } from "./Menus";
 import { useRouter } from "next/navigation";
+import MasterContainer from "../config/MasterContainer";
 
 initializeIcons();
 
@@ -155,7 +156,7 @@ const Dashboard = ({
         // margin: '25px 0px',
     });
     const [isClient, setIsClient] = React.useState(false)
-    const changeRoute = (route:any) => {
+    const changeRoute = (route: any) => {
         router.push(route)
     }
     React.useEffect(() => {
@@ -163,7 +164,7 @@ const Dashboard = ({
     }, [])
     return (
         <FluentProvider theme={toggle ? teamsDarkTheme : teamsLightTheme}>
-     
+
             <div >
 
                 {isClient && <div className={styles.root}>
@@ -172,7 +173,7 @@ const Dashboard = ({
                         defaultSelectedCategoryValue="1"
                         open={isOpen}
                         type={type}
-                        style={{height:'100vh'}}
+                        style={{ height: '100vh' }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                             <NavDrawerHeader>{renderHamburgerWithToolTip()}</NavDrawerHeader>
@@ -184,30 +185,30 @@ const Dashboard = ({
                                 icon={<PersonCircle32Regular />}
                                 as="a"
                                 href={linkDestination}
-                 
+
                             >
                                 Admin
                             </AppItem>
-                            <NavItem onClick={()=>changeRoute('/dashboard')}  icon={<Dashboard1 />} value="1">
+                            <NavItem onClick={() => changeRoute('/dashboard')} icon={<Dashboard1 />} value="1">
                                 Dashboard
                             </NavItem>
                             {
                                 menues.map((el: any, i: any) => (
                                     <NavCategory value={i}>
-                                        <NavCategoryItem  style={{backgroundColor:tokens.colorNeutralBackground1Pressed}} icon={<JobPostings />}>
+                                        <NavCategoryItem style={{ backgroundColor: tokens.colorNeutralBackground1Pressed }} icon={<JobPostings />}>
                                             {el.title}
                                         </NavCategoryItem>
                                         <NavSubItemGroup>
                                             {el.children.map((x: any, ind: any) => (
                                                 <NavCategory key={ind} value={x.title + i}>
-                                                    <NavCategoryItem style={{fontSize:'14px'}} icon={''}>
+                                                    <NavCategoryItem style={{ fontSize: '14px' }} icon={''}>
                                                         {x.title}
 
                                                     </NavCategoryItem>
                                                     {x.child.length && x.child.map((z: any, index: any) => (
                                                         <NavSubItemGroup key={index}>
                                                             {/* colorNeutralForegroundDisabled */}
-                                                            <NavSubItem style={{backgroundColor:tokens.colorNeutralBackground1Pressed,fontSize:'13px'}} onClick={()=>changeRoute(z.route)} value={z.name} >
+                                                            <NavSubItem style={{ backgroundColor: tokens.colorNeutralBackground1Pressed, fontSize: '13px' }} onClick={() => changeRoute(z.route)} value={z.name} >
                                                                 {z.name}
                                                             </NavSubItem>
 
@@ -230,20 +231,24 @@ const Dashboard = ({
 
                                 ))
                             }
-                            
+
 
                         </NavDrawerBody>
                     </NavDrawer>
                     <div className={styles.content}>
 
                         {/* <AppBar  /> */}
-                        <AppBar openHam={isOpen} setOpenHam={setIsOpen} icon={renderHamburgerWithToolTip()} />
-                        
-                        {children}
+                        <MasterContainer>
+                            <AppBar openHam={isOpen} setOpenHam={setIsOpen} icon={renderHamburgerWithToolTip()} />
+
+                            {children}
+
+                        </MasterContainer>
 
                     </div>
                 </div>}
             </div>
+
         </FluentProvider>
     );
 };

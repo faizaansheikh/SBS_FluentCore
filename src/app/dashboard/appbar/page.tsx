@@ -19,6 +19,7 @@ import {
   useOverflowMenu,
 } from "@fluentui/react-components";
 import { ArrowExitFilled, TextCollapseFilled } from "@fluentui/react-icons";
+import { openDialog } from "@/app/config/MasterContainer";
 const useStyles = makeStyles({
   container: {
     display: "flex",
@@ -107,7 +108,12 @@ export const AppBar = (props:any) => {
     <div style={{backgroundColor:tokens.colorNeutralBackground1Pressed,width:'100%',height:'50px',marginBottom:'10px', 
       borderRadius: "8px",display:'flex',justifyContent:'space-between',alignItems:'center'}}>
      {!openHam ? <TextCollapseFilled onClick={()=>setOpenHam(true)} style={{fontSize:'30px',marginLeft:'10px',cursor:'pointer'}}/>:<div></div>} 
-      <ArrowExitFilled style={{fontSize:'30px',marginRight:'10px',cursor:'pointer'}}/>
+      <ArrowExitFilled style={{fontSize:'30px',marginRight:'10px',cursor:'pointer'}}
+      
+      onClick={()=>{
+        openDialog()
+      }}
+      />
      
     </div>
   );

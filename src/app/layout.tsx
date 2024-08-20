@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import store from "./config/redux/store";
 import { Providers } from "./providers";
 import Login from "./login/page";
+import MasterContainer from "./config/MasterContainer";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -24,19 +25,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gridlex/2.7.1/gridlex.min.css"></link>
       </head>
-  
+
 
 
       <body>
         <Providers>
-          {children}
-       
+          <MasterContainer>
+            {children}
+            </MasterContainer>
+
+
         </Providers>
       </body>
-      
+
     </html>
   );
 }

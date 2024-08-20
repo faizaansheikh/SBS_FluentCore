@@ -2,6 +2,7 @@
 
 import BABox from "@/app/components/BABox";
 import { BAButton } from "@/app/components/BAButton";
+import { BADialog } from "@/app/components/BADialog";
 import BAFormElement from "@/app/components/BAFormElement";
 import BAScreenHeader from "@/app/components/BAScreenHeader";
 import { ArrowDownloadRegular, SaveRegular } from "@fluentui/react-icons";
@@ -124,6 +125,7 @@ export default function UserForm() {
                     }
                 ]}/>
             </div>
+            <BADialog open={'d'}/>
             <BABox>
                 <BAFormElement
                     // disabledForm={!screenRole.Create || !screenRole.Edit}
