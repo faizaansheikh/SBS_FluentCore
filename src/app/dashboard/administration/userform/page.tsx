@@ -116,16 +116,17 @@ export default function UserForm() {
     return <>
         <div>
             <div>
-                <BAScreenHeader title={'Users'} headerOptions={[
+                {/* <BAScreenHeader title={'Users'} headerOptions={[
                     // {
                     //     displayField:() => <BAButton  label={'Download'} />
                     // },
                     {
                        displayField:() => <BAButton style={{fontSize:'18px'}} icon={<SaveRegular  color="blue" fontSize={20}/>} label={'Save'} />
                     }
-                ]}/>
+                ]}/> */}
+                 <BAScreenHeader title={'Users'} />
             </div>
-            <BADialog open={'d'}/>
+        
             <BABox>
                 <BAFormElement
                     // disabledForm={!screenRole.Create || !screenRole.Edit}

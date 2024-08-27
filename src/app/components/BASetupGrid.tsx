@@ -31,6 +31,7 @@ import {
 import BAScreenHeader from "./BAScreenHeader";
 import { BAButton } from "./BAButton";
 import { GeneralCoreService } from "../config/GeneralCoreService";
+import BAPagination from "./BAPagination";
 
 const items = [
   {
@@ -191,14 +192,15 @@ export const BASetupGrid = (props: any) => {
   return (
 
     <div>
-      <BAScreenHeader title={title} headerOptions={[
+      {/* <BAScreenHeader title={title} headerOptions={[
         {
           displayField: () => <BAButton icon={<ArrowDownloadRegular color="blue" fontSize={18} />} label={'Upload'} />
         },
         {
           displayField: () => <BAButton onClick={addEdit} icon={<AddRegular color="blue" fontSize={18} />} label={'Add New'} />
         },
-      ]} />
+      ]} /> */}
+       <BAScreenHeader title={title} onClick={addEdit}/>
       <Table
         {...keyboardNavAttr}
         role="grid"
@@ -237,7 +239,7 @@ export const BASetupGrid = (props: any) => {
         </TableHeader>
 
         <TableBody>
-          {rows.map((item: any, i: any) => (
+          {datasource && datasource.length && datasource.map((item: any, i: any) => (
             <TableRow key={i}>
               {config.map((x: any, ind: any) => (
                 <TableCell tabIndex={0} role="gridcell">
@@ -254,6 +256,7 @@ export const BASetupGrid = (props: any) => {
               </TableCell>
             </TableRow>
           ))}
+        
           {/* {items.map((item, i) => (
             <TableRow key={i}>
 
@@ -297,6 +300,7 @@ export const BASetupGrid = (props: any) => {
           ))} */}
         </TableBody>
       </Table>
+      <BAPagination/>
     </div>
   );
 };

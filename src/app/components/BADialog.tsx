@@ -1,48 +1,42 @@
-import * as React from "react";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogSurface,
-  DialogTitle,
-  DialogContent,
-  DialogBody,
-  DialogActions,
-  Button,
-} from "@fluentui/react-components";
+"use client";
+import { useState } from 'react';
+import { Dialog, DialogType, DialogFooter, DefaultButton, DialogContent } from '@fluentui/react';
 
-export const BADialog = (props:any) => {
-    const{open} = props
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
- 
-  React.useEffect(() => {
-    if (open && buttonRef.current) {
-      buttonRef.current.focus();
-    }
-  }, [open]);
+const BADialog = (props: any) => {
+  const { open, setOpen, close, body, footer, title } = props
+  // const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
-    <Dialog >
-      <DialogTrigger disableButtonEnhancement>
-        <Button>Open dialog</Button>
-      </DialogTrigger>
-      <DialogSurface>
-        <DialogBody>
-          <DialogTitle>Dialog title</DialogTitle>
-          <DialogContent>
-            This dialog focus on the second button instead of the first
-          </DialogContent>
-          <DialogActions position="start">
-            <Button appearance="outline">Third Action</Button>
-          </DialogActions>
-          <DialogActions position="end">
-            <DialogTrigger disableButtonEnhancement>
-              <Button ref={buttonRef} appearance="secondary">
-                Close
-              </Button>
-            </DialogTrigger>
-            <Button appearance="primary">Do Something</Button>
-          </DialogActions>
-        </DialogBody>
-      </DialogSurface>
-    </Dialog>
+    <div>
+
+      <Dialog
+        hidden={!open}
+        onDismiss={() => setOpen(false)}
+        dialogContentProps={{
+          type: DialogType.normal,
+          title: title,
+        }}
+        styles={{
+          main:{
+            maxWidth: '500px', 
+            width:'300px'
+          }
+        }}
+      >
+
+
+        <DialogContent>
+          {body}
+        </DialogContent>
+
+
+        <DialogFooter>
+          {footer}
+          <DefaultButton onClick={() => close()} text="Close" />
+        </DialogFooter>
+      </Dialog>
+    </div>
   );
 };
+
+export  {BADialog};

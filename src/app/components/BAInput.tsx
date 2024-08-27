@@ -49,12 +49,12 @@ export const BAInput = (props: any) => {
     return (
         <div >
             <div style={{display:'flex',justifyContent:'start',alignItems:'center'}}>
-                <Label htmlFor={inputId} style={{ paddingInlineEnd: "10px",textWrap:'nowrap',width:'100%' }}>
+                <Label htmlFor={inputId} style={{ paddingInlineEnd: "5px",textWrap:'nowrap',width:'60%' }}>
                    {label}
                 </Label>
                 {/* <Label htmlFor={beforeId}>{label}</Label> */}
                 <Input
-                    appearance="underline"
+                    // appearance="underline"
                     style={{width:'100%'}}
                     type={type}
                     id={inputId} 

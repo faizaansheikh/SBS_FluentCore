@@ -17,8 +17,11 @@ import {
   useIsOverflowGroupVisible,
   useIsOverflowItemVisible,
   useOverflowMenu,
+  Title1,
+  Body2,
+  Avatar,
 } from "@fluentui/react-components";
-import { ArrowExitFilled, TextCollapseFilled } from "@fluentui/react-icons";
+import { ArrowExitFilled, GridDotsRegular, LauncherSettingsFilled, QuestionFilled, TextCollapseFilled } from "@fluentui/react-icons";
 import { openDialog } from "@/app/config/MasterContainer";
 const useStyles = makeStyles({
   container: {
@@ -36,7 +39,7 @@ const useStyles = makeStyles({
     position: "relative",
     resize: "horizontal",
     "::after": {
-    //   content: `'Resizable Area'`,
+      //   content: `'Resizable Area'`,
       position: "absolute",
       padding: "1px 4px 1px",
       top: "-2px",
@@ -52,8 +55,8 @@ const useStyles = makeStyles({
   },
 });
 
-export const AppBar = (props:any) => {
-  const{openHam,setOpenHam} = props
+export const AppBar = (props: any) => {
+  const { openHam, setOpenHam } = props
   const styles = useStyles();
 
   return (
@@ -105,16 +108,33 @@ export const AppBar = (props:any) => {
     //     />
     //   </div>
     // </Overflow>
-    <div style={{backgroundColor:tokens.colorNeutralBackground1Pressed,width:'100%',height:'50px',marginBottom:'10px', 
-      borderRadius: "8px",display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-     {!openHam ? <TextCollapseFilled onClick={()=>setOpenHam(true)} style={{fontSize:'30px',marginLeft:'10px',cursor:'pointer'}}/>:<div></div>} 
-      <ArrowExitFilled style={{fontSize:'30px',marginRight:'10px',cursor:'pointer'}}
-      
-      onClick={()=>{
-        openDialog()
-      }}
-      />
-     
+    <div style={{
+      position: 'sticky',
+      top: 0, right: 0, bottom: 0, left: 0, backgroundColor: tokens.colorNeutralBackground1Pressed, width: '100%', height: '50px', marginBottom: '0px',
+      borderRadius: "0px", display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+    }}>
+      {!openHam ? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <GridDotsRegular onClick={() => setOpenHam(true)} style={{ fontSize: '30px', marginLeft: '10px', marginRight: '20px', cursor: 'pointer' }} />
+        <Body2 className="text-center  font-semibold" style={{ fontWeight: 500, fontSize: '22px' }}>SBS Smart Business Solutions</Body2>
+      </div> : <Body2 className="text-center font-semibold pl-[10px]" style={{ fontWeight: 500, fontSize: '18px' }}>SBS Smart Business Solutions</Body2>}
+
+      <div>
+        <LauncherSettingsFilled style={{ fontSize: '25px', marginRight: '10px', cursor: 'pointer' }} />
+        <QuestionFilled style={{ fontSize: '25px', marginRight: '10px', cursor: 'pointer' }} />
+        <Avatar style={{ marginRight: '10px', cursor: 'pointer' }}
+          color="anchor"
+          initials="A"
+          name="Admin"
+          active="active"
+          activeAppearance="ring"
+          onClick={() => {
+            openDialog()
+          }}
+        />
+
+      </div>
+
+
     </div>
   );
 };

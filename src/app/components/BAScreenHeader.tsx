@@ -1,62 +1,77 @@
-"use client"
-
 import * as React from "react";
-import { Toolbar } from "@fluentui/react-components";
+import {
+    FontIncrease24Regular,
+    FontDecrease24Regular,
+    TextFont24Regular,
+    MoreHorizontal24Filled,
+    SaveRegular,
+    AddRegular,
+    ArrowDownRegular,
+    ChevronDownFilled,
+    DeleteRegular,
+    FilterFilled,
+    AppsListRegular,
+} from "@fluentui/react-icons";
+import {
+    Toolbar,
+    ToolbarButton,
+    ToolbarDivider,
+    Menu,
+    MenuTrigger,
+    MenuPopover,
+    MenuList,
+    MenuItem,
+    makeStyles,
+    ToolbarGroup,
+} from "@fluentui/react-components";
 import type { ToolbarProps } from "@fluentui/react-components";
 import { BAButton } from "./BAButton";
-import { ArrowCircleLeftRegular } from "@fluentui/react-icons";
-import BAText from "./BAText";
-import { AppBar } from "../dashboard/appbar/page";
-import { ContextualMenuItem, getTagItemStyles, IContextualMenuItemProps, IContextualMenuStyles } from "@fluentui/react";
-import { useRouter } from "next/navigation";
+const useStyles = makeStyles({
+    toolbar: {
 
+        justifyContent: "space-between",
+        marginTop: '10px',
+        borderTop: '1px solid lightgrey',
+        borderBottom: '1px solid lightgrey'
+    },
+});
+const BAScreenHeader = (props: any) => {
+    const farGroupStyles = useStyles();
+    const {  title,onClick } = props
 
-export default function BAScreenHeader(props: any) {
-    const { headerOptions, label, title } = props
-    const router = useRouter();
-    const CustomMenuItem: React.FunctionComponent<IContextualMenuItemProps> = props => {
-    
-        return <ContextualMenuItem {...props} />;
-    };
-    const menuStyles: Partial<IContextualMenuStyles> = {
-        subComponentStyles: { menuItem: getTagItemStyles, callout: {} },
-    };
-    const goBack = () => {
-        
-        router.back();
-      };
-   
-    
     return (
-        <>
-            <Toolbar
-                {...props}
-                aria-label="Small"
-                size="large"
-                style={{
-                    border: "2px solid black",
-                    borderRadius: "8px",
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    padding: '6px'
-                }}
-            >
-                <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
-                    <ArrowCircleLeftRegular fontSize="37px" style={{cursor:'pointer'}} onClick={goBack}/>
-                    <BAText style={{margin:'0px 0px 1px 5px'}}>{title}</BAText>
+        <Toolbar aria-label="Default" className={farGroupStyles.toolbar}>
 
-                </div>
+            <ToolbarGroup role="" style={{ display: 'flex', flexDirection: 'row' }}>
 
-                <div style={{ display: 'flex',alignItems:'center' }}>
-                  <div>
-                
-                  </div>
-                    {headerOptions?.map((option: any, index: any) => (
-                        <div style={{ marginRight: '10px' }}>{option.displayField()}</div>
-                    ))}
 
-                </div>
-            </Toolbar>
-        </>
+                <BAButton style={{ fontSize: '20px' }}  label={title} />
+                <ToolbarDivider />
+
+                <BAButton style={{ fontSize: '15px' }} icon={<ChevronDownFilled color="blue" fontSize={18} />} label={'All'} />
+                <ToolbarDivider />
+
+                <BAButton onClick={onClick} icon={<AddRegular color="blue" fontSize={18} />} label={'New'} />
+                <ToolbarDivider />
+
+                <BAButton  icon={<DeleteRegular color="blue" fontSize={18} />} label={'Delete'} />
+                <ToolbarDivider />
+
+            </ToolbarGroup>
+            <ToolbarGroup role="" style={{ display: 'flex', flexDirection: 'row' }}>
+                <BAButton style={{ fontSize: '20px' }} icon={<AppsListRegular color="black" fontSize={36} />} label={''} />
+
+                <ToolbarDivider />
+
+                <BAButton style={{ fontSize: '20px' }} icon={<FilterFilled color="black" fontSize={36} />} label={''} />
+
+            </ToolbarGroup>
+
+
+        </Toolbar>
     )
 }
+
+
+
+export default BAScreenHeader;

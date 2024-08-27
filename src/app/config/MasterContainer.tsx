@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from 'react'
-import { BADialog } from '../components/BADialog';
+import {BADialog} from '../components/BADialog';
+// import { BADialog } from '../components/BADialog';
 // import BAShowError from '../components/BAShowError'
 // import BAModal from '../components/BAModal'
 // import BAFullScreenLoader from '../components/BAFullScreenLoader'
@@ -34,7 +35,7 @@ export default function MasterContainer(props: any) {
     const [show1, setShow] = useState<boolean>(false)
 
 
-    const [openModal, setOpenModal] = useState<boolean>(true)
+    const [openModal, setOpenModal] = useState<boolean>(false)
     const [modalBody, setModalBody] = useState<any>()
     const [modalFooter, setModalFooter] = useState<any>()
     const [modalTitle, setModalTitle] = useState<any>()
@@ -83,7 +84,15 @@ export default function MasterContainer(props: any) {
     return <>
         {/* <BAFullScreenLoader open={loading} />
         <BAShowError message={message} type={severity} open={openError} close={(e: boolean) => setOpenError(e)} /> */}
-        <BADialog  open={openModal} close={closeDialog} title={modalTitle} body={modalBody} width={modalWidth} footer={modalFooter} />
+        <BADialog
+        open={openModal} 
+        setOpen={setOpenModal}
+        close={closeDialog} 
+        title={modalTitle} 
+        body={modalBody} 
+        width={modalWidth} 
+        footer={modalFooter}
+         />
 
         
         {children}

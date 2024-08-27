@@ -69,13 +69,14 @@ initializeIcons();
 
 const useStyles = makeStyles({
     root: {
-        overflow: "hidden",
+        // overflow: "hidden",
         display: "flex",
-        // height: "600px",
+ 
     },
     content: {
         // flex: "1",
-        padding: "16px",
+        // paddingLeft: "10px",
+       
         // display: "grid",
         justifyContent: "flex-start",
         alignItems: "flex-start",
@@ -164,28 +165,33 @@ const Dashboard = ({
     }, [])
     return (
         <FluentProvider theme={toggle ? teamsDarkTheme : teamsLightTheme}>
-
-            <div >
-
+  
+            <div>
+                {/* <div style={{ position:'fixed',top:0,left:0,right:100,zIndex:100}}></div> */}
                 {isClient && <div className={styles.root}>
                     <NavDrawer
                         defaultSelectedValue="2"
                         defaultSelectedCategoryValue="1"
                         open={isOpen}
                         type={type}
-                        style={{ height: '100vh' }}
+                        style={{ height: '100vh',
+                            // overflow: "hidden",
+                         
+                           
+                            
+                        }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                             <NavDrawerHeader>{renderHamburgerWithToolTip()}</NavDrawerHeader>
                             <NavDrawerHeader >{renderSwitchWithToolTip()}</NavDrawerHeader>
                         </div>
 
-                        <NavDrawerBody >
+                        <NavDrawerBody>
                             <AppItem
                                 icon={<PersonCircle32Regular />}
                                 as="a"
                                 href={linkDestination}
-
+                     
                             >
                                 Admin
                             </AppItem>
@@ -235,12 +241,12 @@ const Dashboard = ({
 
                         </NavDrawerBody>
                     </NavDrawer>
+                 
                     <div className={styles.content}>
-
-                        {/* <AppBar  /> */}
+                  
                         <MasterContainer>
-                            <AppBar openHam={isOpen} setOpenHam={setIsOpen} icon={renderHamburgerWithToolTip()} />
-
+                    
+                        <AppBar openHam={isOpen} setOpenHam={setIsOpen} icon={renderHamburgerWithToolTip()} />
                             {children}
 
                         </MasterContainer>
