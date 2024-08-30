@@ -19,7 +19,7 @@ export default function BAPagination(props: any) {
     return (
         <div style={{ backgroundColor: tokens.colorSubtleBackgroundInvertedPressed, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="w-4/8 h-10 mb-2">
              <div></div>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="d-flex justify-content-center alignItems-center flex-column">
+            <div style={{ display: 'flex ', justifyContent: 'center', alignItems: 'center' }} className="d-flex justify-content-center alignItems-center flex-column">
                
                 <div style={{ display: 'flex', flexDirection: 'row', width: '32px' ,justifyContent: 'center', alignItems: 'center'}} className={` text-center rounded `}>
               
