@@ -27,92 +27,34 @@ import {
   useArrowNavigationGroup,
   useFocusableGroup,
   Tag,
+  tokens,
 } from "@fluentui/react-components";
 import BAScreenHeader from "./BAScreenHeader";
 import { BAButton } from "./BAButton";
 import { GeneralCoreService } from "../config/GeneralCoreService";
 import BAPagination from "./BAPagination";
+import FALoader from "./FALoader";
+import { useRouter } from "next/navigation";
 
 
-const items = [
-  {
-    // file: { label: "Meeting notes", icon: <DocumentRegular /> },
-    author: { label: "Max Mustermann", status: "available" },
-    lastUpdated: { label: "7h ago", timestamp: 1 },
-    lastUpdate: {
-      label: "You edited this",
-      icon: <EditRegular />,
-    },
-  },
-  {
-    // file: { label: "Thursday presentation", icon: <FolderRegular /> },
-    author: { label: "Erika Mustermann", status: "busy" },
-    lastUpdated: { label: "Yesterday at 1:45 PM", timestamp: 2 },
-    lastUpdate: {
-      label: "You recently opened this",
-      icon: <OpenRegular />,
-    },
-  },
-  {
-    // file: { label: "Training recording", icon: <VideoRegular /> },
-    author: { label: "John Doe", status: "away" },
-    lastUpdated: { label: "Yesterday at 1:45 PM", timestamp: 2 },
-    lastUpdate: {
-      label: "You recently opened this",
-      icon: <OpenRegular />,
-    },
-  },
-  {
-    // file: { label: "Purchase order", icon: <DocumentPdfRegular /> },
-    author: { label: "Jane Doe", status: "offline" },
-    lastUpdated: { label: "Tue at 9:30 AM", timestamp: 3 },
-    lastUpdate: {
-      label: "You shared this in a Teams chat",
-      icon: <PeopleRegular />,
-    },
-  },
-];
-const rows = [
-  {
-    "rowID": "10225",
-    "Id": "10225",
-    "UserName": "Syed",
-    "Password": "syed123",
-    "IsActive": true,
-    "Designation": "syedinformation",
-    "DefaultLocationCode": "Clifton",
-    "DefaultLocation": "Clifton",
-    "Email": "syed@gmail.com",
-    "ContactNo": "878988098098",
-  },
-  {
-    "rowID": "10225",
-    "Id": "102252",
-    "UserName": "Syed",
-    "Password": "syed123",
-    "IsActive": false,
-    "Designation": "syedinformation",
-    "DefaultLocationCode": "Clifton",
-    "DefaultLocation": "Clifton",
-    "Email": "syed@gmail.com",
-    "ContactNo": "878988098098",
-  }
-]
+
 
 export const BASetupGrid = (props: any) => {
   const { controller,
-    addEdit,
+    // addEdit,
     rowMenu,
     title,
     config,
     primaryKey,
     FormName,
-    module } = props
+    module, path } = props
+  const router = useRouter()
   const keyboardNavAttr = useArrowNavigationGroup({ axis: "grid" });
   const [gridCols, setGridCols] = useState([...config]);
   const [datasource, setDatasource] = useState<any>([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const [gridSearchObj, setGridSearchObj] = useState({});
+  const [isHovered, setIsHovered] = useState(false);
   const [property, setProperty] = useState({
     loading: false,
     deleteLoading: false,
@@ -120,25 +62,16 @@ export const BASetupGrid = (props: any) => {
     isColumnEditing: false,
     isPosting: false,
   });
-
+  const [pagination, setPagination] = useState({
+    pageNo: 1,
+    pageSize: 10,
+  });
   const focusableGroupAttr = useFocusableGroup({
     tabBehavior: "limited-trap-focus",
   });
-  const item =
-    [
 
-
-      {
-        key: 'Add',
-        text: 'Add',
-        iconProps: { iconName: 'Add' },
-        onClick: () => addEdit()
-
-      },
-
-    ]
   const getLabelAndColor = (x: any, item: any) => {
-    
+
 
     let color = ''
     let label = ''
@@ -161,10 +94,20 @@ export const BASetupGrid = (props: any) => {
     }
 
   }
-  const SearchCriteria = {
+  // const SearchCriteria = {
+  //   pageSize: 10,
+  //   pageNo: 1,
+  //   selector: config.map((x:any) => x.field).join(","),
+  // };
+  const SearchCriteria: {
+    pageSize: number;
+    pageNo: number;
+    SearchBy?: any;
+    selector: string;
+  } = {
     pageSize: 10,
     pageNo: 1,
-    selector: config.map((x:any) => x.field).join(","),
+    selector: config.map((x: any) => x.field).join(","),
   };
   let getData = (SearchObj?: any) => {
     setProperty({ ...property, loading: true });
@@ -176,7 +119,7 @@ export const BASetupGrid = (props: any) => {
 
     GeneralCoreService(`${module}/${FormName}`)
       .Register(obj)
-      .then((res:any) => {
+      .then((res: any) => {
         console.log([...res.data.rows]);
         setDatasource([...res.data.rows]);
         setTotalRecords(res.data.TotalCount);
@@ -186,33 +129,40 @@ export const BASetupGrid = (props: any) => {
         setProperty({ ...property, loading: false });
       });
   };
+
+  const handleEdit = (i: any) => {
+      console.log(datasource[i][primaryKey]);
+      
+    router.push(`${path}/${datasource[i][primaryKey]}`)
+  }
+  const addEdit = () => {
+   
+
+    router.push(path)
+  }
   React.useEffect(() => {
     getData();
- 
+
   }, []);
+
   return (
 
     <div>
-      {/* <BAScreenHeader title={title} headerOptions={[
-        {
-          displayField: () => <BAButton icon={<ArrowDownloadRegular color="blue" fontSize={18} />} label={'Upload'} />
-        },
-        {
-          displayField: () => <BAButton onClick={addEdit} icon={<AddRegular color="blue" fontSize={18} />} label={'Add New'} />
-        },
-      ]} /> */}
-       <BAScreenHeader title={title} onClick={addEdit}/>
-      <Table
+     
+      <BAScreenHeader title={title} onClick={addEdit} />
+      {property.loading ? <FALoader /> : <Table
         {...keyboardNavAttr}
         role="grid"
         aria-label="Table with grid keyboard navigation"
-        style={{ minWidth: "620px", marginTop: '10px' }}
+        style={{ minWidth: "620px", marginTop: '10px', backgroundColor: tokens.colorNeutralBackground1Selected }}
       >
-        <TableHeader style={{ height: '20px', position: 'sticky', top: 0, right: 0, bottom: 0, left: 0 }}>
+
+        <TableHeader style={{ height: '20px', position: 'sticky', top: 0, right: 0, bottom: 0, left: 0, borderBottom: '2px solid black' }}>
+
           <TableRow>
             {gridCols.map((el: any, i: any) => (
               <TableHeaderCell key={i}>
-                <TableCellLayout>
+                <TableCellLayout style={{ color: tokens.colorNeutralStrokeAccessibleHover, padding: '12px 0px' }}>
 
                   {el.title}
                 </TableCellLayout>
@@ -220,88 +170,59 @@ export const BASetupGrid = (props: any) => {
 
               </TableHeaderCell>
             ))}
-            <TableCellLayout style={{ display: 'flex', justifyContent: 'end' }} >
-              Actions
-            </TableCellLayout>
-            {/* {columns.map((column) => (
-              <TableHeaderCell>
-                  
-                <TableCellLayout style={
-              
-                  column.label === 'Actions'? {display:'flex',justifyContent:'end'}:{}
-                  } key={column.columnKey}
-               >
-                  {column.label}
-                </TableCellLayout>
+            {/* <TableHeaderCell>
+              <TableCellLayout style={{ display: 'flex', justifyContent: 'end' }} >
+                Actions
+              </TableCellLayout>
+            </TableHeaderCell> */}
 
-              </TableHeaderCell>
-            ))} */}
+
+
           </TableRow>
+
         </TableHeader>
 
         <TableBody>
+
           {datasource && datasource.length && datasource.map((item: any, i: any) => (
             <TableRow key={i}>
               {config.map((x: any, ind: any) => (
-                <TableCell tabIndex={0} role="gridcell">
+                <TableCell
+                  style={{
+                    paddingLeft: ind === 0 ? '15px' : '', cursor: ind === 0 ? 'pointer' : '',
+                    color: ind === 0 ? tokens.colorNeutralForeground2BrandHover : ''
+                  }}
+                  tabIndex={0}
+                  role="gridcell"
+                  onClick={(e: any) => handleEdit(i)}
+                >
                   {/* {x.field === 'IsActive' && renderTag(x,item)} */}
                   {renderTag(x, item)}
                   {item[x.field]}
                 </TableCell>
               ))}
-              <TableCell tabIndex={0} {...focusableGroupAttr}>
+              {/* <TableCell tabIndex={0} {...focusableGroupAttr}>
                 <TableCellLayout style={{ display: 'flex', justifyContent: 'end' }}>
                   <Button icon={<EditRegular />} aria-label="Edit" />
                   <Button icon={<DeleteRegular />} aria-label="Delete" />
                 </TableCellLayout>
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           ))}
-        
-          {/* {items.map((item, i) => (
-            <TableRow key={i}>
 
-              <TableCell tabIndex={0} role="gridcell">
-                <TableCellLayout
-                  media={
-                    <Avatar
-                      aria-label={item.author.label}
-                      name={item.author.label}
-                      badge={{
-                        status: item.author.status as PresenceBadgeStatus,
-                      }}
-                    />
-                  }
-                >
-                  {item.author.label}
-                </TableCellLayout>
 
-              </TableCell>
-
-              <TableCell tabIndex={0} role="gridcell">
-                {item.lastUpdated.label}
-              </TableCell>
-              
-              <TableCell tabIndex={0} role="gridcell">
-
-                <TableCellLayout media={item.lastUpdate.icon}>
-                  {item.lastUpdate.label}
-                </TableCellLayout>
-
-              </TableCell>
-
-              <TableCell tabIndex={0} {...focusableGroupAttr}>
-                <TableCellLayout style={{ display: 'flex', justifyContent: 'end' }}>
-                  <Button icon={<EditRegular />} aria-label="Edit" />
-                  <Button icon={<DeleteRegular />} aria-label="Delete" />
-                </TableCellLayout>
-              </TableCell>
-
-            </TableRow>
-          ))} */}
         </TableBody>
-      </Table>
-      <BAPagination totalCount={totalRecords}/>
+      </Table>}
+
+      <BAPagination
+        totalCount={totalRecords}
+        onPageChange={(page: any) => {
+          SearchCriteria.pageNo = page;
+
+          getData()
+
+        }}
+      />
     </div>
   );
 };

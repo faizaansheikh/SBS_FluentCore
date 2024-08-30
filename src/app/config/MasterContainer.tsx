@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import {BADialog} from '../components/BADialog';
+import FAFullScreenLoader from '../components/FAFullScreenLoader';
 // import { BADialog } from '../components/BADialog';
 // import BAShowError from '../components/BAShowError'
 // import BAModal from '../components/BAModal'
@@ -21,7 +22,7 @@ type displayErrorType = (message: string, severity: 'success' | 'error') => void
 export let displayError: displayErrorType
 export let openDialog: openDialogType
 export let closeDialog: () => void
-export let openLoader: () => void
+export let openLoader: any
 export let closeLoader: () => void
 
 
@@ -72,8 +73,8 @@ export default function MasterContainer(props: any) {
     }
     //#endregion
 
-    openLoader = () => {
-        setLoading(true)
+    openLoader = (action:any) => {
+        setLoading(action)
     }
     closeLoader = () => {
         setLoading(false)
@@ -84,6 +85,7 @@ export default function MasterContainer(props: any) {
     return <>
         {/* <BAFullScreenLoader open={loading} />
         <BAShowError message={message} type={severity} open={openError} close={(e: boolean) => setOpenError(e)} /> */}
+        <FAFullScreenLoader open={loading}/>
         <BADialog
         open={openModal} 
         setOpen={setOpenModal}
