@@ -33,6 +33,7 @@ import { BAButton } from "./BAButton";
 import { GeneralCoreService } from "../config/GeneralCoreService";
 import BAPagination from "./BAPagination";
 
+
 const items = [
   {
     // file: { label: "Meeting notes", icon: <DocumentRegular /> },
@@ -300,7 +301,7 @@ export const BASetupGrid = (props: any) => {
           ))} */}
         </TableBody>
       </Table>
-      <BAPagination/>
+      <BAPagination totalCount={totalRecords}/>
     </div>
   );
 };
