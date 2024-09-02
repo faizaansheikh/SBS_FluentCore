@@ -1,6 +1,7 @@
 "use client"
 
 import { BAInput } from "./BAInput";
+import {BASearchLookup} from "./BASearchLookup";
 
 
 
@@ -79,38 +80,38 @@ export default function BAComponentSwitcher(props: propsType) {
         //             }
         //         }}
         //     />
-        // case "lookup":
-        //     return <BASearchLookup
-        //         label={element.label}
-        //         controller={element.controller}
-        //         config={element.config}
-        //         displayField={element.displayField || ""}
-        //         value={model && model[element.key]}
-        //         multiple={element.multiple}
-        //         singleValue={element.singleValue || ""}
-        //         fillObj={element.fillObj || ""}
-        //         setModel={setModel}
-        //         model={model}
-        //         style={view === 'grid' ? { borderRadius: '0' } : { padding: '13px 12px 4px 11px',height:'auto' }}
-        //         view={view}
-        //         onChange={(e: any, val: any, obj: any) => {
+        case "lookup":
+            return <BASearchLookup
+                label={element.label}
+                controller={element.controller}
+                config={element.config}
+                displayField={element.displayField || ""}
+                value={model && model[element.key]}
+                multiple={element.multiple}
+                singleValue={element.singleValue || ""}
+                fillObj={element.fillObj || ""}
+                setModel={setModel}
+                model={model}
+                style={view === 'grid' ? { borderRadius: '0' } : { padding: '13px 12px 4px 11px',height:'auto' }}
+                view={view}
+                onChange={(e: any, val: any, obj: any) => {
                    
-        //             if (val) {
-        //                 fillModel(element.key, val)
-        //                 if (element.ChangeEv) {
-        //                     console.log(val);
+                    if (val) {
+                        fillModel(element.key, val)
+                        if (element.ChangeEv) {
+                            console.log(val);
 
-        //                     element.ChangeEv(null, val, obj, element);
-        //                 }
-        //             }
+                            element.ChangeEv(null, val, obj, element);
+                        }
+                    }
 
-        //             else if (!element.multiple) {
-        //                 setModel({ ...model, [element.key]: e.target.value })
-        //             }
+                    else if (!element.multiple) {
+                        setModel({ ...model, [element.key]: e.target.value })
+                    }
 
 
-        //         }}
-        //     />
+                }}
+            />
         // case "date":
         //     return (
         //         <BADate

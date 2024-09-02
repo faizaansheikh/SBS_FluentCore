@@ -3,11 +3,13 @@ import { useState } from 'react';
 import { Dialog, DialogType, DialogFooter, DefaultButton, DialogContent } from '@fluentui/react';
 
 const BADialog = (props: any) => {
-  const { open, setOpen, close, body, footer, title } = props
+  const { open, setOpen, close, body, footer, title,width } = props
   // const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
-    <div>
+    <div style={{
+      width:'600px'
+    }}>
 
       <Dialog
         hidden={!open}
@@ -18,10 +20,13 @@ const BADialog = (props: any) => {
         }}
         styles={{
           main:{
-            maxWidth: '500px', 
-            width:'300px'
+            // maxWidth: '300px', 
+            // minWidth:'300px', 
+            width:width?width:'900px'
           }
         }}
+
+        
       >
 
 

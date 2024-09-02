@@ -1,16 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import {
-  FolderRegular,
-  EditRegular,
-  OpenRegular,
-  DocumentRegular,
-  PeopleRegular,
-  DocumentPdfRegular,
-  VideoRegular,
-  DeleteRegular,
-  ArrowDownloadRegular,
-  AddRegular,
+ 
   CalendarMonthRegular,
 } from "@fluentui/react-icons";
 import {
@@ -150,7 +141,8 @@ export const BASetupGrid = (props: any) => {
     <div>
      
       <BAScreenHeader title={title} onClick={addEdit} />
-      {property.loading ? <FALoader /> : <Table
+      {property.loading ? <FALoader /> : 
+      <Table
         {...keyboardNavAttr}
         role="grid"
         aria-label="Table with grid keyboard navigation"
@@ -161,7 +153,12 @@ export const BASetupGrid = (props: any) => {
 
           <TableRow>
             {gridCols.map((el: any, i: any) => (
-              <TableHeaderCell key={i}>
+              <TableHeaderCell key={i}
+              style={{
+                paddingLeft: i === 0 ? '25px' : '', cursor: i === 0 ? 'pointer' : '',
+       
+              }}
+              >
                 <TableCellLayout style={{ color: tokens.colorNeutralStrokeAccessibleHover, padding: '12px 0px' }}>
 
                   {el.title}
@@ -189,7 +186,7 @@ export const BASetupGrid = (props: any) => {
               {config.map((x: any, ind: any) => (
                 <TableCell
                   style={{
-                    paddingLeft: ind === 0 ? '15px' : '', cursor: ind === 0 ? 'pointer' : '',
+                    paddingLeft: ind === 0 ? '25px' : '', cursor: ind === 0 ? 'pointer' : '',
                     color: ind === 0 ? tokens.colorNeutralForeground2BrandHover : ''
                   }}
                   tabIndex={0}

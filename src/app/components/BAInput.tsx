@@ -6,6 +6,7 @@ import {
     Button,
     Input,
     Label,
+    tokens,
 } from "@fluentui/react-components";
 import { MicRegular } from "@fluentui/react-icons";
 import type { ButtonProps } from "@fluentui/react-components";
@@ -48,16 +49,17 @@ export const BAInput = (props: any) => {
     // className={styles.root}
     return (
         <div >
-            <div style={{display:'flex',justifyContent:'start',alignItems:'center'}}>
-                <Label htmlFor={inputId} style={{ paddingInlineEnd: "5px",textWrap:'nowrap',width:'60%' }}>
-                   {label}
+            <div style={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
+                <Label htmlFor={inputId} className="d flex justify-center align-center" style={{ paddingInlineEnd: "5px", textWrap: 'nowrap', alignItems: 'center', width: '100%', color: tokens.colorBrandForeground2Pressed }}>
+                    {label}
+                    <div className="ml-1 w-full h-0 mt-2" style={{border: `1px dashed ${tokens.colorBrandForeground2Pressed}`,fontWeight:'lighter'}}> </div>
                 </Label>
                 {/* <Label htmlFor={beforeId}>{label}</Label> */}
                 <Input
                     // appearance="underline"
-                    style={{width:'100%'}}
+                    style={{ width: '100%' }}
                     type={type}
-                    id={inputId} 
+                    id={inputId}
                     // id={beforeId}
                     value={value}
                     onChange={onChange}
