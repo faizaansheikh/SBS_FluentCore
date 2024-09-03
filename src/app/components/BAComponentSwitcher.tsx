@@ -2,6 +2,7 @@
 
 import { BAInput } from "./BAInput";
 import {BASearchLookup} from "./BASearchLookup";
+import { BASelect } from "./BASelect";
 
 
 
@@ -26,7 +27,8 @@ export default function BAComponentSwitcher(props: propsType) {
 
 
 
-
+ 
+    
     switch (element.elementType) {
         case "input":
             return <BAInput
@@ -65,26 +67,27 @@ export default function BAComponentSwitcher(props: propsType) {
         //         label={element.label}
         //         loading={element.loading}
         //     />
-        // case "select":
-        //     return <BASelect
-        //         multiple={element.multiple}
-        //         disabled={disabledForm || element.disabled}
-        //         label={element.label}
+        case "select":
+            return <BASelect
+                multiple={element.multiple}
+                disabled={disabledForm || element.disabled}
+                label={element.label}
 
-        //         options={element.options ?? []}
-        //         value={model[element.key]}
-        //         onChange={(e: any, val: any, obj: any) => {
-        //             setModel({ ...model, [element.key]: e })
-        //             if(element.ChangeEv){
-        //                 element.ChangeEv(e,val,obj)
-        //             }
-        //         }}
-        //     />
+                options={element.options ?? []}
+                value={model[element.key]}
+                onChange={(e: any, val: any, obj: any) => {
+                    setModel({ ...model, [element.key]: e })
+                    if(element.ChangeEv){
+                        element.ChangeEv(e,val,obj)
+                    }
+                }}
+            />
         case "lookup":
             return <BASearchLookup
                 label={element.label}
+                module={element.module}
                 controller={element.controller}
-                config={element.config}
+                filterConfig={element.filterConfig}
                 displayField={element.displayField || ""}
                 value={model && model[element.key]}
                 multiple={element.multiple}
@@ -94,21 +97,23 @@ export default function BAComponentSwitcher(props: propsType) {
                 model={model}
                 style={view === 'grid' ? { borderRadius: '0' } : { padding: '13px 12px 4px 11px',height:'auto' }}
                 view={view}
-                onChange={(e: any, val: any, obj: any) => {
-                   
+                onCancel={() => {
+                    if (element.onCancel) {
+                      element.onCancel(rowIndex);
+                    }
+                  }}
+                onChange={(val: any, obj: any) => {
+                  
                     if (val) {
                         fillModel(element.key, val)
                         if (element.ChangeEv) {
                             console.log(val);
 
-                            element.ChangeEv(null, val, obj, element);
+                            element.ChangeEv(null, val, obj);
                         }
                     }
 
-                    else if (!element.multiple) {
-                        setModel({ ...model, [element.key]: e.target.value })
-                    }
-
+                    
 
                 }}
             />
@@ -171,10 +176,12 @@ export type formElement = {
     onClick?: any,
     controller?: any,
     type?: any,
-    config?: any,
+    filterConfig?: any,
     displayField?: any,
     ChangeEv?: any,
     singleValue?: any,
     fillObj?: any,
-    updateVal?: any
+    updateVal?: any,
+    module?:any,
+    onCancel?:any
 }

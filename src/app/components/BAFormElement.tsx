@@ -36,6 +36,7 @@ export default function BAFormElement(props: propsType) {
                             element={element}
                             model={model}
                             setModel={setModel}
+                            rowIndex={index}
                         // disabledForm={disabledForm}
                         />
                     </div>

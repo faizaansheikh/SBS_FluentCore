@@ -10,6 +10,7 @@ import Login from "./login/page";
 import MasterContainer from "./config/MasterContainer";
 
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

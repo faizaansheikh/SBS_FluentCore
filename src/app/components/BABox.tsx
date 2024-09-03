@@ -1,3 +1,4 @@
+"use client"
 import { tokens } from "@fluentui/react-components";
 
 export default function BABox(props: any) {

@@ -11,6 +11,7 @@ import { useState } from "react";
 export default function UserForm() {
     const [model, setModel] = useState({
         IsActive: true,
+        Roles:[]
     });
     let formElem = [
 
@@ -40,27 +41,28 @@ export default function UserForm() {
         {
             col: 6,
             elementType: "lookup",
-            key: "RoleId",
+            key: "Roles",
             label: "Roles",
-            controller: 'roles',
-            config: roleConfig,
+            module: "Security",
+            controller: "Roles",
+            valueField: "Id ",
             displayField: "RoleName",
-            fillObj: { arr: 'role', val: 'RoleId' },
-            disabled: false,
-            // multiple: true,
-            ChangeEv: (e: any, val: any, obj: any, element: any) => {
-                setModel((prevModel: any) => ({
-                    ...prevModel,
-                    RoleId:obj.Id
-                }));
-                
-               
-            }
-           
-        },
+            filterConfig: roleConfig,
+            // fillObj: lookupObjs.rolesObj,
+            required: true,
+            multiple: true,
+            onCancel: () => {
+              model.Roles = [];
+              setModel({ ...model });
+            },
+            ChangeEv: (ev:any, val:any, obj:any, element:any, index:any) => {
+            //   model.Roles = ev;
+              setModel({ ...model });
+            },
+          },
         {
             col: 6,
-            elementType: "input",
+            elementType: "select",
             key: "Company",
             label: "Company",
             required: true,
@@ -127,6 +129,8 @@ export default function UserForm() {
 
 
     ];
+    console.log(model);
+    
     return <>
         <div>
           

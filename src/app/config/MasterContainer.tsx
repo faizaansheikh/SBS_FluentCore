@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useState } from 'react'
-import {BADialog} from '../components/BADialog';
+
 import FAFullScreenLoader from '../components/FAFullScreenLoader';
-// import { BADialog } from '../components/BADialog';
+
 // import BAShowError from '../components/BAShowError'
 // import BAModal from '../components/BAModal'
 // import BAFullScreenLoader from '../components/BAFullScreenLoader'
 
 type openDialogType = (
-   
+
     title?: string,
     body?: any | null,
     footer?: any | null,
     width?: string,
- 
+
 ) => void
 
 type displayErrorType = (message: string, severity: 'success' | 'error') => void
@@ -24,10 +24,12 @@ export let openDialog: openDialogType
 export let closeDialog: () => void
 export let openLoader: any
 export let closeLoader: () => void
-
+import { initializeIcons } from '@fluentui/react';
+import { BADialog } from '../components/BADialog';
+initializeIcons();
 
 export default function MasterContainer(props: any) {
-   
+
     const { children } = props
 
     const [openError, setOpenError] = useState<boolean>(false)
@@ -63,7 +65,7 @@ export default function MasterContainer(props: any) {
         setModalBody(body)
         setModalFooter(footer)
         setModalWidth(width ?? '60vw')
-        
+
         // setOnCloseCallback(() => onClose)
     }
 
@@ -73,7 +75,7 @@ export default function MasterContainer(props: any) {
     }
     //#endregion
 
-    openLoader = (action:any) => {
+    openLoader = (action: any) => {
         setLoading(action)
     }
     closeLoader = () => {
@@ -85,19 +87,19 @@ export default function MasterContainer(props: any) {
     return <>
         {/* <BAFullScreenLoader open={loading} />
         <BAShowError message={message} type={severity} open={openError} close={(e: boolean) => setOpenError(e)} /> */}
-        <FAFullScreenLoader open={loading}/>
+        <FAFullScreenLoader open={loading} />
         <BADialog
-        open={openModal} 
-        setOpen={setOpenModal}
-        close={closeDialog} 
-        title={modalTitle} 
-        body={modalBody} 
-        width={modalWidth} 
-        footer={modalFooter}
-         />
+            isOpen={openModal}
+            title={modalTitle}
 
-        
+            onClose={closeDialog}
+            body={modalBody}
+            width={'700px'}
+        // footer={modalFooter}
+        />
+
+
         {children}
-        
+
     </>
 }

@@ -1,10 +1,10 @@
 /* Grid.css */
 .grid-container {
     display: grid;
-    gap: 10px; /* Adjust gap between grid items */
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Adjust column sizes */
-    grid-template-rows: auto; /* Adjust row sizes */
-    grid-template-areas: inherit; /* Use inline style for dynamic areas */
+    gap: 10px; 
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+    grid-template-rows: auto; 
+    grid-template-areas: inherit; 
   }
   
   .grid-item {
@@ -21,10 +21,3 @@
       width: 900px!important;
    } */
    
-   @media (min-width: 480px) {
-    .main-108 {
-        width: auto;
-        min-width: 340px!important;
-        max-width: 900px!important;
-    }
-}

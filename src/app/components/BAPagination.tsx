@@ -10,7 +10,7 @@ import {
 import { ArrowCircleLeftRegular, ArrowCircleRightRegular } from "@fluentui/react-icons";
 export default function BAPagination(props: any) {
 
-    const { totalCount, onPageChange } = props
+    const { totalCount, onPageChange,flag } = props
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10)
     const [pgNo, setPgNo] = useState(1)
@@ -51,8 +51,8 @@ export default function BAPagination(props: any) {
   
  
     return (
-        <div style={{ backgroundColor: tokens.colorBrandBackground2Pressed, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="w-4/8 h-10 mb-2">
-            <div style={{ fontSize: '20px' }}></div>
+        <div style={{ backgroundColor: tokens.colorBrandBackground2Pressed, display: 'flex', justifyContent: flag === 'lookup' ? 'center':'space-between', alignItems: 'center' }} className="w-4/8 h-10 mb-2">
+            {flag !== 'lookup' && <div style={{ fontSize: '20px' }}></div>}
             <div style={{ display: 'flex ', justifyContent: 'center', alignItems: 'center' }} className="d-flex justify-content-center alignItems-center flex-column">
 
                 <div style={{ display: 'flex', flexDirection: 'row',  justifyContent: 'center', alignItems: 'center' }} className={` text-center rounded `}>
@@ -91,7 +91,7 @@ export default function BAPagination(props: any) {
                 </div>
             </div>
 
-            <div style={{ fontSize: '20px', marginRight: '13px' }}>Total Records: {totalCount}</div>
+            {flag !== 'lookup' && <div style={{ fontSize: '20px', marginRight: '13px' }}>Total Records: {totalCount}</div>}
         </div>
     )
 }
