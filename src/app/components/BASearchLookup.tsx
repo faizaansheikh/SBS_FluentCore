@@ -15,8 +15,11 @@ import {
   TableCellLayout,
   TableBody,
   TableCell,
+  Popover,
+  PopoverTrigger,
+  PopoverSurface,
 } from "@fluentui/react-components";
-import { DismissCircleRegular, MicRegular, SearchFilled, XboxConsoleFilled } from "@fluentui/react-icons";
+import { CaretDownFilled, DismissCircleRegular, FilterFilled, MicRegular, SearchFilled, XboxConsoleFilled } from "@fluentui/react-icons";
 import type { ButtonProps } from "@fluentui/react-components";
 import { BADialog } from "./BADialog";
 import './custom.css'
@@ -25,6 +28,9 @@ import BAPagination from "./BAPagination";
 import { BACheckBox } from "./BACheckBox";
 import { BAInput } from "./BAInput";
 import { BASelect } from "./BASelect";
+import FALoader from "./FALoader";
+import './custom.css'
+import { json } from "stream/consumers";
 const useStyles = makeStyles({
   root: {
     display: "flex",
@@ -64,12 +70,15 @@ export const BASearchLookup = (props: any) => {
   const inputId = useId("input");
 
   const [inpVal, setInpVal] = React.useState("");
+  const [checkVal, setCheckVal] = React.useState<any>(Object.values(filterConfig[0])[0] ?? '');
 
   const [property, setProperty] = React.useState({
     loading: false,
     openModal: false,
     openListView: false,
   });
+  const [isVisible, setIsVisible] = React.useState(false);
+  const popoverRef = React.useRef<HTMLDivElement>(null);
   const [loader, setLoader] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false)
   const [arr, setArr] = React.useState<any>([])
@@ -82,16 +91,17 @@ export const BASearchLookup = (props: any) => {
     SearchVal: "",
     selector: {}
   });
-  const [recordCount, setRecordCount] = React.useState(null);
+  const [recordCount, setRecordCount] = React.useState(0);
 
+  
   const getData = (Page?: any, Size?: any) => {
     setLoader(true);
     setProperty({ ...property, openListView: true });
     // paginatonConfig.selector = filterConfig.map((x:any) => x.field).join(",");
     // paginatonConfig.Distinct = distinct;
-    // paginatonConfig.SearchBy = JSON.stringify({ ...searchBy });
+    // paginatonConfig.SearchBy = filterValue !== '' ? {[checkVal]:filterValue} : {}
     paginatonConfig.SearchVal = inpVal;
-    paginatonConfig.SearchBy = inpVal === '' ? JSON.stringify({}) : JSON.stringify({ [displayField]: inpVal });
+    // paginatonConfig.SearchBy = inpVal === '' ? JSON.stringify({}) : JSON.stringify({ [displayField]: inpVal });
     paginatonConfig.pageSize = Size ? Size : paginatonConfig.pageSize;
 
     GeneralCoreService(controller, null, module)
@@ -120,7 +130,7 @@ export const BASearchLookup = (props: any) => {
   };
   const closeDialog = () => {
     setIsOpen(false)
-    setRecordCount(null)
+    setRecordCount(0)
   }
   const handleCheck = (e: any, i: any) => {
     if (e.target.checked) {
@@ -143,8 +153,16 @@ export const BASearchLookup = (props: any) => {
   }
 
 
-  console.log(filterValue);
-  
+
+  const togglePopover = () => {
+    setIsVisible(!isVisible);
+  };
+
+  const closePopover = () => {
+    setIsVisible(false);
+  };
+
+
   return (
     <div >
       <BADialog
@@ -169,104 +187,109 @@ export const BASearchLookup = (props: any) => {
             overflowY: 'auto',
             position: 'relative',
           }}>
-            <Table
-              // {...keyboardNavAttr}
-              role="grid"
-              aria-label="Table with grid keyboard navigation"
-              style={{
-                minWidth: "620px", marginTop: '10px',
-                // height: '300px',
-                backgroundColor: tokens.colorNeutralBackground1Selected,
-                zIndex: -700
-              }}
-            >
+            {loader ? <FALoader /> : (
+              <>
+                <Table
+                  // {...keyboardNavAttr}
+                  role="grid"
+                  aria-label="Table with grid keyboard navigation"
+                  style={{
+                    minWidth: "620px", marginTop: '10px',
+                    // height: '300px',
+                    backgroundColor: tokens.colorNeutralBackground1Selected,
+                    zIndex: -700
+                  }}
+                >
 
-              <TableHeader style={{ height: '20px', borderBottom: '2px solid black' }}>
-                {/* position: 'sticky', top: 0, right: 0, bottom: 0, left: 0,  */}
-                <TableRow>
-                  {filterConfig?.map((el: any, i: any) => (
-                    <TableHeaderCell key={i}
-                      style={{
-                        paddingLeft: i === 0 ? '25px' : '', cursor: i === 0 ? 'pointer' : '',
+                  <TableHeader style={{ height: '20px', borderBottom: '2px solid black' }}>
+                    {/* position: 'sticky', top: 0, right: 0, bottom: 0, left: 0,  */}
+                    <TableRow>
+                      {filterConfig?.map((el: any, i: any) => (
+                        <TableHeaderCell key={i}
+                          style={{
+                            paddingLeft: i === 0 ? '25px' : '', cursor: i === 0 ? 'pointer' : '',
 
-                      }}
-                    >
-                      <TableCellLayout style={{
-                        color: tokens.colorNeutralStrokeAccessibleHover,
+                          }}
+                        >
+                          <TableCellLayout style={{
+                            color: tokens.colorNeutralStrokeAccessibleHover,
 
-                        padding: '12px 0px',
-
-
-                      }}>
-
-                        {el.label}
-                      </TableCellLayout>
+                            padding: '12px 0px',
 
 
-                    </TableHeaderCell>
-                  ))}
+                          }}>
+
+                            {el.label}
+                          </TableCellLayout>
+
+
+                        </TableHeaderCell>
+                      ))}
 
 
 
 
-                </TableRow>
+                    </TableRow>
 
-              </TableHeader>
+                  </TableHeader>
 
-              <TableBody style={{ zIndex: 1000 }}>
+                  <TableBody style={{ zIndex: 1000 }}>
 
-                {datasource && datasource.length && datasource.map((item: any, i: any) => (
-                  <TableRow key={i}
-                    onClick={() => handleRow(i)}
-                  >
-                    {filterConfig?.map((x: any, ind: any) => (
-                      <TableCell
-                        style={{
-                          paddingLeft: ind === 0 ? '25px' : '', cursor: ind === 0 ? 'pointer' : '',
-                          color: ind === 0 ? tokens.colorNeutralForeground2BrandHover : ''
-                        }}
-                        tabIndex={0}
-                        role="gridcell"
-
+                    {datasource && datasource.length && datasource.map((item: any, i: any) => (
+                      <TableRow key={i}
+                        onClick={() => handleRow(i)}
                       >
-                        {/* {x.field === 'IsActive' && renderTag(x,item)} */}
+                        {filterConfig?.map((x: any, ind: any) => (
+                          <TableCell
+                            style={{
+                              paddingLeft: ind === 0 ? '25px' : '', cursor: ind === 0 ? 'pointer' : '',
+                              color: ind === 0 ? tokens.colorNeutralForeground2BrandHover : ''
+                            }}
+                            tabIndex={0}
+                            role="gridcell"
 
-                        {item[x.key]}
-                      </TableCell>
+                          >
+                            {/* {x.field === 'IsActive' && renderTag(x,item)} */}
+
+                            {item[x.key]}
+                          </TableCell>
+                        ))}
+                        {multiple &&
+                          <TableCell
+                            style={{
+                              paddingLeft: '30px'
+                            }}
+                            tabIndex={0}
+                            role="gridcell"
+                          //   onClick={(e: any) => handleEdit(i)}
+                          >
+                            {/* {x.field === 'IsActive' && renderTag(x,item)} */}
+
+                            <BACheckBox onChange={(e: any) => handleCheck(e, i)} />
+                          </TableCell>
+                        }
+                      </TableRow>
                     ))}
-                    {multiple &&
-                      <TableCell
-                        style={{
-                          paddingLeft: '30px'
-                        }}
-                        tabIndex={0}
-                        role="gridcell"
-                      //   onClick={(e: any) => handleEdit(i)}
-                      >
-                        {/* {x.field === 'IsActive' && renderTag(x,item)} */}
-
-                        <BACheckBox onChange={(e: any) => handleCheck(e, i)} />
-                      </TableCell>
-                    }
-                  </TableRow>
-                ))}
 
 
-              </TableBody>
-            </Table>
+                  </TableBody>
+                </Table>
 
-            <div style={{ position: 'sticky', top: 0, right: 0, bottom: 0, left: 0 }}>
-              <BAPagination
-                flag='lookup'
-                totalCount={recordCount}
-                onPageChange={(page: any) => {
-                  paginatonConfig.pageNo = page;
+                <div style={{ position: 'sticky', top: 0, right: 0, bottom: 0, left: 0 }}>
+                  <BAPagination
+                    flag='lookup'
+                    totalCount={recordCount}
+                    onPageChange={(page: any) => {
+                      paginatonConfig.pageNo = page;
 
-                  getData()
+                      getData()
 
-                }}
-              />
-            </div>
+                    }}
+                  />
+                </div>
+              </>
+            )}
+
 
           </div>
 
@@ -275,19 +298,49 @@ export const BASearchLookup = (props: any) => {
         height={'500px'}
         extraField={`Total Records: ${recordCount}`}
         extraHeader={
-          
+          <div className="d flex justify-content-center align-center">
+            <div className="popover-container" ref={popoverRef}>
+              <div className="popover-trigger" onClick={togglePopover}>
+                <div className="d flex justify-content-center align-center" style={{ cursor: 'pointer' }}>
+                  <FilterFilled fontSize={20} />
+                  <div className="text-sm">Filter</div>
+                  <CaretDownFilled fontSize={20} />
+                </div>
+              </div>
+              {isVisible && (
+                <div className="popover-content d flex flex-column justify-content-center align-center" style={{ backgroundColor: tokens.colorNeutralBackground1, fontSize: '14px', cursor: 'pointer' }} >
+                  {filterConfig?.map((el: any, i: any) => (
+                    <div style={{backgroundColor:checkVal === el.key ? tokens.colorNeutralBackground1Selected:'' }} onClick={(e:any)=>{
+                      setCheckVal(e.target.textContent)
+                      closePopover()
+                    }}>
+                     
+                      <span style={{ fontSize: '16px'}}>
+                        {el.key}
+                      </span>
+                    </div>
+                  ))}
+
+                </div>
+              )}
+            </div>
+
+
             <BASelect
 
 
               width={'300px'}
               custom={true}
-              options={datasource ? datasource.map((x:any)=>x[displayField]): []}
+              options={datasource ? datasource.map((x: any) => x[checkVal === '' ? displayField : checkVal]) : []}
               value={filterValue}
               onChange={(e: any, val: any, obj: any) => {
                 setFilterValue(e.target.value)
+                paginatonConfig.SearchBy = JSON.stringify({[checkVal]:e.target.value})
+                getData()
               }}
             />
-         
+          </div>
+
         }
 
       />

@@ -21,3 +21,40 @@
       width: 900px!important;
    } */
    
+/* Popover.css */
+.popover-container {
+  position: relative;
+  display: inline-block;
+}
+
+.popover-trigger {
+  cursor: pointer;
+}
+
+.popover-content {
+  position: absolute;
+  top: 100%; /* Position the popover below the trigger */
+  left: 50%;
+  transform: translateX(-50%);
+  /* background-color: #fff; */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Arrow styling */
+.popover-content::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 10px 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent #fff transparent;
+}

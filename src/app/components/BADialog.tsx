@@ -1,4 +1,5 @@
 "use client"
+import { tokens } from '@fluentui/react-components';
 import { DismissFilled } from '@fluentui/react-icons';
 // components/Dialog.tsx
 import React from 'react';
@@ -20,8 +21,8 @@ const BADialog: React.FC<DialogProps> = ({ isOpen, onClose, body, title, width, 
   if (!isOpen) return null;
 
   return (
-    <div className="backdrop">
-      <div className="dialog" style={{display:'flex',flexDirection:'column', maxWidth: width ? width : '600px', height: height ? height : '200px' }}>
+    <div className="backdrop" >
+      <div className="dialog" style={{backgroundColor:tokens.colorNeutralBackground1,display:'flex',flexDirection:'column', maxWidth: width ? width : '600px', height: height ? height : '200px' }}>
         <div className='d flex justify-between align-center'>
           <div className='d flex justify-between align-center '>
             <h1 className='text-xl mr-2'>{title}</h1>
@@ -70,7 +71,7 @@ const BADialog: React.FC<DialogProps> = ({ isOpen, onClose, body, title, width, 
         }
 
         .dialog {
-          background-color: white;
+          // background-color: white;
           padding: 20px;
           border-radius: 8px;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);

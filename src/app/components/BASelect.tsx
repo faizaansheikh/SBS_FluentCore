@@ -22,6 +22,7 @@ export const BASelect = (props: any) => {
                    
                     {/* <Label htmlFor={beforeId}>{label}</Label> */}
                     <Select id={`${selectId}-med`}
+                        
                         size="medium"
                         onChange={onChange}
                         value={value}
