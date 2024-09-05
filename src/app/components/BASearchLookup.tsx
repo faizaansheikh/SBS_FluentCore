@@ -15,11 +15,9 @@ import {
   TableCellLayout,
   TableBody,
   TableCell,
-  Popover,
-  PopoverTrigger,
-  PopoverSurface,
+
 } from "@fluentui/react-components";
-import { CaretDownFilled, DismissCircleRegular, FilterFilled, MicRegular, SearchFilled, XboxConsoleFilled } from "@fluentui/react-icons";
+import { AddCircleFilled, ArrowStepInRightRegular, CaretDownFilled, DismissCircleRegular, FilterFilled, MicRegular, SaveFilled, SearchFilled, XboxConsoleFilled } from "@fluentui/react-icons";
 import type { ButtonProps } from "@fluentui/react-components";
 import { BADialog } from "./BADialog";
 import './custom.css'
@@ -54,19 +52,10 @@ const MicButton: React.FC<ButtonProps> = (props) => {
     />
   );
 };
-// type propsType = {
-//     value:any,
-//     onChange:any,
-//     type:any
-// }
+
 export const BASearchLookup = (props: any) => {
   const { value, onChange, type, disabled, label, controller, module, filterConfig, displayField, multiple, onCancel } = props
 
-
-
-  const styles = useStyles();
-
-  const beforeId = useId("content-before");
   const inputId = useId("input");
 
   const [inpVal, setInpVal] = React.useState("");
@@ -78,11 +67,13 @@ export const BASearchLookup = (props: any) => {
     openListView: false,
   });
   const [isVisible, setIsVisible] = React.useState(false);
+  const [isVisible2, setIsVisible2] = React.useState(false);
   const popoverRef = React.useRef<HTMLDivElement>(null);
   const [loader, setLoader] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false)
   const [arr, setArr] = React.useState<any>([])
   const [datasource, setDatasource] = React.useState<any>([]);
+  const [list, setList] = React.useState<any>([]);
   const [filterValue, setFilterValue] = React.useState<any>("");
   const [paginatonConfig, setPaginationConfig] = React.useState({
     pageSize: 10,
@@ -93,8 +84,9 @@ export const BASearchLookup = (props: any) => {
   });
   const [recordCount, setRecordCount] = React.useState(0);
 
-  
+
   const getData = (Page?: any, Size?: any) => {
+    console.log(list)
     setLoader(true);
     setProperty({ ...property, openListView: true });
     // paginatonConfig.selector = filterConfig.map((x:any) => x.field).join(",");
@@ -103,10 +95,20 @@ export const BASearchLookup = (props: any) => {
     paginatonConfig.SearchVal = inpVal;
     // paginatonConfig.SearchBy = inpVal === '' ? JSON.stringify({}) : JSON.stringify({ [displayField]: inpVal });
     paginatonConfig.pageSize = Size ? Size : paginatonConfig.pageSize;
-
+    let field = displayField
     GeneralCoreService(controller, null, module)
       .Lookup({ ...paginatonConfig })
       .then((res: any) => {
+
+        res.data.rows.forEach((x: any, i: number) => {
+          list.forEach((z: any) => {
+            if (z[field] === x[displayField]) {
+              x.checked = true
+            }
+          })
+
+        })
+
         setDatasource([...res.data.rows]);
         setRecordCount(res.data?.TotalCount);
         setLoader(false);
@@ -132,22 +134,24 @@ export const BASearchLookup = (props: any) => {
     setIsOpen(false)
     setRecordCount(0)
   }
-  const handleCheck = (e: any, i: any) => {
+
+
+  const handleDropCheck = (e: any, i: any) => {
+
     if (e.target.checked) {
-      setArr((prev: any) => [...prev, datasource[i][displayField]])
+      setArr((prev: any) => [...prev, list[i][displayField]])
+
     } else {
-      arr.splice(i, 1)
-      setArr([...arr])
-
-
+      let filt = arr.filter((x: any) => {
+        return x !== list[i][displayField]
+      })
+      setArr([...filt])
     }
-
-
   }
   const handleRow = (i: any) => {
     if (!multiple) {
-      onChange(datasource[i][displayField], datasource[i])
-      closeDialog()
+      onChange(list[i][displayField], list[i])
+      setIsVisible2(false);
     }
 
   }
@@ -161,22 +165,18 @@ export const BASearchLookup = (props: any) => {
   const closePopover = () => {
     setIsVisible(false);
   };
-
-
+  console.log(list)
   return (
-    <div >
+    <div>
       <BADialog
 
         isOpen={isOpen}
         title={label}
 
         handleClick={() => {
-          if (multiple) {
-            onChange(arr.join(","))
-            closeDialog()
-          } else {
-            closeDialog()
-          }
+
+          closeDialog()
+
         }}
         onClose={closeDialog}
         body={
@@ -190,19 +190,17 @@ export const BASearchLookup = (props: any) => {
             {loader ? <FALoader /> : (
               <>
                 <Table
-                  // {...keyboardNavAttr}
                   role="grid"
                   aria-label="Table with grid keyboard navigation"
                   style={{
                     minWidth: "620px", marginTop: '10px',
-                    // height: '300px',
                     backgroundColor: tokens.colorNeutralBackground1Selected,
                     zIndex: -700
                   }}
                 >
 
                   <TableHeader style={{ height: '20px', borderBottom: '2px solid black' }}>
-                    {/* position: 'sticky', top: 0, right: 0, bottom: 0, left: 0,  */}
+
                     <TableRow>
                       {filterConfig?.map((el: any, i: any) => (
                         <TableHeaderCell key={i}
@@ -215,20 +213,12 @@ export const BASearchLookup = (props: any) => {
                             color: tokens.colorNeutralStrokeAccessibleHover,
 
                             padding: '12px 0px',
-
-
                           }}>
 
                             {el.label}
                           </TableCellLayout>
-
-
                         </TableHeaderCell>
                       ))}
-
-
-
-
                     </TableRow>
 
                   </TableHeader>
@@ -236,38 +226,60 @@ export const BASearchLookup = (props: any) => {
                   <TableBody style={{ zIndex: 1000 }}>
 
                     {datasource && datasource.length && datasource.map((item: any, i: any) => (
-                      <TableRow key={i}
-                        onClick={() => handleRow(i)}
-                      >
+
+                      <TableRow key={i}>
                         {filterConfig?.map((x: any, ind: any) => (
                           <TableCell
                             style={{
                               paddingLeft: ind === 0 ? '25px' : '', cursor: ind === 0 ? 'pointer' : '',
-                              color: ind === 0 ? tokens.colorNeutralForeground2BrandHover : ''
+                              color: ind === 0 ? (item.checked ? 'black' : tokens.colorNeutralForeground2BrandHover) : '',
+                              fontWeight: ind === 0 ? (item.checked ? 'bold' : '') : '',
                             }}
                             tabIndex={0}
                             role="gridcell"
 
                           >
-                            {/* {x.field === 'IsActive' && renderTag(x,item)} */}
-
                             {item[x.key]}
                           </TableCell>
                         ))}
-                        {multiple &&
-                          <TableCell
-                            style={{
-                              paddingLeft: '30px'
-                            }}
-                            tabIndex={0}
-                            role="gridcell"
-                          //   onClick={(e: any) => handleEdit(i)}
-                          >
-                            {/* {x.field === 'IsActive' && renderTag(x,item)} */}
 
-                            <BACheckBox onChange={(e: any) => handleCheck(e, i)} />
-                          </TableCell>
-                        }
+                        <TableCell
+                          style={{
+                            paddingLeft: '30px'
+                          }}
+                          tabIndex={0}
+                          role="gridcell"
+
+                        >
+
+
+                          <BACheckBox checked={item.checked} onChange={(e: any) => {
+
+
+                            if (datasource[i].checked) {
+                              datasource[i] = { ...datasource[i], checked: false }
+                            } else {
+                              datasource[i] = { ...datasource[i], checked: true }
+                            }
+                            setDatasource([...datasource])
+
+                            if (e.target.checked) {
+                              setList((prev: any) => [...prev, datasource[i]])
+                            } else {
+                              list.forEach((x: any, ind: any) => {
+
+                                if (x[displayField] === datasource[i][displayField]) {
+                                  list.splice(ind, 1)
+
+                                }
+                              })
+
+                              setList([...list])
+                            }
+
+                          }} />
+                        </TableCell>
+
                       </TableRow>
                     ))}
 
@@ -281,7 +293,7 @@ export const BASearchLookup = (props: any) => {
                     totalCount={recordCount}
                     onPageChange={(page: any) => {
                       paginatonConfig.pageNo = page;
-
+                      // setDatasource([])
                       getData()
 
                     }}
@@ -310,12 +322,12 @@ export const BASearchLookup = (props: any) => {
               {isVisible && (
                 <div className="popover-content d flex flex-column justify-content-center align-center" style={{ backgroundColor: tokens.colorNeutralBackground1, fontSize: '14px', cursor: 'pointer' }} >
                   {filterConfig?.map((el: any, i: any) => (
-                    <div style={{backgroundColor:checkVal === el.key ? tokens.colorNeutralBackground1Selected:'' }} onClick={(e:any)=>{
+                    <div style={{ backgroundColor: checkVal === el.key ? tokens.colorNeutralBackground1Selected : '' }} onClick={(e: any) => {
                       setCheckVal(e.target.textContent)
                       closePopover()
                     }}>
-                     
-                      <span style={{ fontSize: '16px'}}>
+
+                      <span style={{ fontSize: '16px' }}>
                         {el.key}
                       </span>
                     </div>
@@ -335,7 +347,7 @@ export const BASearchLookup = (props: any) => {
               value={filterValue}
               onChange={(e: any, val: any, obj: any) => {
                 setFilterValue(e.target.value)
-                paginatonConfig.SearchBy = JSON.stringify({[checkVal]:e.target.value})
+                paginatonConfig.SearchBy = JSON.stringify({ [checkVal]: e.target.value })
                 getData()
               }}
             />
@@ -351,30 +363,153 @@ export const BASearchLookup = (props: any) => {
           <div className="ml-1 w-full h-0 mt-2" style={{ border: `1px dashed ${tokens.colorBrandForeground2Pressed}`, fontWeight: 'lighter' }}> </div>
         </Label>
         {/* <Label htmlFor={beforeId}>{label}</Label> */}
-        <Input
-          // appearance="underline"
-          style={{ width: '100%' }}
-          type={type}
-          id={inputId}
-          // id={beforeId}
+        <div className="popover-container w-[100%]" ref={popoverRef}>
+          <div className="popover-trigger" onClick={() => setIsVisible2(!isVisible2)}>
+            <div className="d flex justify-content-center align-center " style={{}}>
+              {/* <FilterFilled fontSize={20} />
+                  <div className="text-sm">Filter</div>
+                  <CaretDownFilled fontSize={20} /> */}
+              <Input
+                // appearance="underline"
+                style={{ width: '100%' }}
+                type={type}
+                id={inputId}
+                // id={beforeId}
 
-          onKeyPress={handleKeyPress}
-          value={value}
-          onChange={onChange}
-          disabled={disabled}
-          contentAfter={
-            value.length === 0 ? <div onClick={handleIcon} style={{ cursor: 'pointer' }}>
-              <SearchFilled fontSize={18} />
-            </div> :
-              <div onClick={() => {
-                setArr([])
-                onCancel()
-              }} style={{ cursor: 'pointer' }}>
-                <DismissCircleRegular fontSize={18} />
+                onKeyPress={handleKeyPress}
+                value={value}
+                onChange={onChange}
+                disabled={disabled}
+                contentAfter={
+                  value.length === 0 ? <div style={{ cursor: 'pointer' }}>
+                    <SearchFilled fontSize={18} />
+                  </div> :
+                    <div onClick={() => {
+                      setArr([])
+                      onCancel()
+                    }} style={{ cursor: 'pointer' }}>
+                      <DismissCircleRegular fontSize={18} />
+                    </div>
+
+                }
+              />
+            </div>
+          </div>
+          {isVisible2 && (
+            <div className="lookup-content d flex flex-column justify-content-center align-center" style={{ backgroundColor: tokens.colorNeutralBackground1, fontSize: '14px', cursor: 'pointer', padding: '1px' }} >
+
+              <Table
+                // role="grid"
+                aria-label="Table with grid keyboard navigation"
+                style={{
+                  backgroundColor: tokens.colorNeutralBackground1Selected,
+
+                }}
+              >
+                {list.length !== 0 && <TableHeader style={{ height: '20px', borderBottom: '2px solid black' }}>
+
+                  <TableRow>
+                    {filterConfig?.map((el: any, i: any) => (
+                      <TableHeaderCell key={i}>
+                        <TableCellLayout style={{
+                          color: tokens.colorNeutralStrokeAccessibleHover,
+                          padding: '9px',
+                          paddingLeft: i === 0 ? '30px' : ''
+                        }}>
+                          {el.label}
+                        </TableCellLayout>
+
+
+                      </TableHeaderCell>
+                    ))}
+                  </TableRow>
+
+                </TableHeader>}
+
+
+
+                {list.length === 0 ?
+                  <div className="h-[165px]" style={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                    <div className="text-lg pb-3">No data found</div>
+                    <div style={{ textAlign: 'center', border: '1px solid black', borderRadius: '3px', padding: '10px' }} onClick={handleIcon}>
+
+                      <AddCircleFilled fontSize={25} />
+                      <span style={{ textAlign: 'center', paddingLeft: '5px' }}>Add data</span>
+                    </div>
+                  </div> : <TableBody style={{
+                    zIndex: 1000, textAlign: 'start'
+                  }}>
+                    {
+                      list.map((item: any, i: any) => (
+
+                        <TableRow key={i}
+                          onClick={() => handleRow(i)}
+                        >
+                          {filterConfig?.map((x: any, ind: any) => (
+                            <TableCell
+                              style={{
+                                cursor: 'pointer',
+                                color: ind === 0 ? tokens.colorNeutralForeground2BrandHover : '',
+                                paddingLeft: ind === 0 ? '10px' : ''
+                              }}
+                              tabIndex={0}
+                              role="gridcell"
+
+                            >
+
+                              {ind === 0 && <ArrowStepInRightRegular fontSize={25} />}     {item[x.key]}
+                            </TableCell>
+
+
+                          ))}
+                          {multiple &&
+                            <TableCell
+                              style={{
+                                paddingLeft: '30px'
+                              }}
+                              tabIndex={0}
+                              role="gridcell"
+                            //   onClick={(e: any) => handleEdit(i)}
+                            >
+                              {/* {x.field === 'IsActive' && renderTag(x,item)} */}
+
+                              <BACheckBox onChange={(e: any, index: any) => handleDropCheck(e, i)} />
+                            </TableCell>
+                          }
+                        </TableRow>
+                      ))}
+
+
+                  </TableBody>
+
+                }
+              </Table>
+
+
+              <div className="d flex justify-between align-center sticky inset-y-0 inset-x-0" style={{ zIndex: 1000, backgroundColor: tokens.colorNeutralBackground3Pressed }} >
+                <div className="d flex justify-center align-center">
+                  <div className="text-lg pl-3" onClick={handleIcon}>+ New</div>
+                  {multiple && <span className="text-lg pl-3"><SaveFilled onClick={() => {
+                    if (arr.length === 0) {
+                      onChange('')
+                    } else {
+                      onChange(arr.join(","))
+                    }
+
+                  }} /></span>}
+                </div>
+                <div className="d flex justify-between align-center text-center">
+                  <div style={{ color: tokens.colorNeutralForeground2BrandHover, paddingRight: '10px', paddingTop: '4px' }} onClick={handleIcon}>Show Details</div>
+                  <div style={{ color: tokens.colorNeutralForeground2BrandHover, paddingRight: '10px', paddingTop: '4px' }} onClick={handleIcon}>Select from full list</div>
+                </div>
               </div>
+            </div>
 
-          }
-        />
+
+          )}
+
+        </div>
+
 
       </div>
     </div>

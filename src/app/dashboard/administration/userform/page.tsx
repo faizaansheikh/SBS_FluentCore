@@ -50,7 +50,7 @@ export default function UserForm() {
             filterConfig: roleConfig,
             // fillObj: lookupObjs.rolesObj,
             required: true,
-            multiple: true,
+            // multiple: true,
             onCancel: () => {
               model.Roles = [];
               setModel({ ...model });
@@ -95,6 +95,13 @@ export default function UserForm() {
             elementType: "input",
             key: "ContactNo",
             label: "Contact No",
+            required: true,
+        },
+        {
+            col: 6,
+            elementType: "boolean",
+            key: "ContactNo",
+            label: "Is Active",
             required: true,
         },
 

@@ -25,6 +25,7 @@
 .popover-container {
   position: relative;
   display: inline-block;
+
 }
 
 .popover-trigger {
@@ -45,6 +46,7 @@
   white-space: nowrap;
   display: flex;
   flex-direction: column;
+  
 }
 
 /* Arrow styling */
@@ -57,4 +59,54 @@
   border-width: 0 10px 10px 10px;
   border-style: solid;
   border-color: transparent transparent #fff transparent;
+}
+.lookup-content {
+  position: absolute;
+  top: 100%; /* Position the popover below the trigger */
+  left: 0%;
+  transform: translateX(-70%);
+
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  border: 1px solid black;
+  height: 200px;
+  overflow-y: scroll;
+}
+.lookup-content::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-70%);
+  border-width: 0 10px 10px 10px;
+  border-style: solid;
+}
+@media only screen and (max-width: 768px) {
+  .lookup-content {
+    width: 100%;
+    right: 100%;
+    transform: translateX(0%);
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .lookup-content {
+    width: 100%;
+    right: 100%;
+    transform: translateX(0%);
+  }
+}
+@media only screen and (max-width: 900px) {
+  .lookup-content {
+    width: 300px;
+    right: 100%;
+    transform: translateX(-30%);
+  }
 }

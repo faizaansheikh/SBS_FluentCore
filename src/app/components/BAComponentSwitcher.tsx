@@ -3,6 +3,7 @@
 import { BAInput } from "./BAInput";
 import {BASearchLookup} from "./BASearchLookup";
 import { BASelect } from "./BASelect";
+import { BASwitch } from "./BASwitch";
 
 
 
@@ -33,7 +34,7 @@ export default function BAComponentSwitcher(props: propsType) {
         case "input":
             return <BAInput
                 type={element.type}
-                value={model[element.key]}
+                value={model[element.key] !== undefined ? model[element.key] : ''}
                 onChange={(ev: any) => {
 
                     setModel({
@@ -103,14 +104,21 @@ export default function BAComponentSwitcher(props: propsType) {
                     }
                   }}
                 onChange={(val: any, obj: any) => {
-                  
-                    if (val) {
+                   console.log(val);
+                   
+                    
+                    if (val !== '') {
                         fillModel(element.key, val)
                         if (element.ChangeEv) {
-                            console.log(val);
+                            
 
                             element.ChangeEv(null, val, obj);
                         }
+                    }else{
+                        setModel({
+                            ...model,
+                            [element.key] : ''
+                        })
                     }
 
                     
@@ -130,32 +138,28 @@ export default function BAComponentSwitcher(props: propsType) {
         //             }}
         //         />
         //     )
-        // case "boolean":
-        //     return (
+        case "boolean":
+            return (
 
 
-        //         <BASwitch
-        //             required={element.required}
-        //             disabled={element.disabled}
-        //             label={element.label}
-        //             value={model && model[element.key] ? model[element.key] : null}
-        //             onChange={(e: any) => {
+                <BASwitch
+                    required={element.required}
+                    disabled={element.disabled}
+                    label={element.label}
+                    // value={model && model[element.key] ? model[element.key] : null}
+                    value={model[element.key] !== undefined ? model[element.key] : false}
+                    onChange={(e: any) => {
+                        
+                        setModel({ ...model, [element.key]: e.target.checked })
+                        // if(e.target.checked){
+                        // }
+                        
+                    }
+                    }
 
-        //                 setModel({ ...model, [element.key]: e })
-        //             }
-        //             }
-
-        //         // onChange={(ev) => {
-        //         //   fillModel(element.key, ev.target.checked);
-        //         //   if (element.ChangeEv) {
-        //         //     element.ChangeEv(ev, ev.target.checked, element, rowIndex);
-        //         //   }
-        //         //   if (rowChangeEv) {
-        //         //     rowChangeEv(ev, ev.target.checked, element, rowIndex);
-        //         //   }
-        //         // }}
-        //         />
-        //     );
+               
+                />
+            );
         default:
             return null;
     }
