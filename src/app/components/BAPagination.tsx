@@ -34,7 +34,7 @@ export default function BAPagination(props: any) {
         setSelectedItem(page)
        
     }
-    console.log(selectedItem);
+    
     
     // const getPages = () => {
 

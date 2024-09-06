@@ -69,27 +69,42 @@ initializeIcons();
 
 const useStyles = makeStyles({
     root: {
-        // overflow: "hidden",
-        display: "flex",
- 
+      display: "flex", 
     },
-    content: {
-        // flex: "1",
-        // paddingLeft: "10px",
-       
-        // display: "grid",
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
-        width: '100%'
+    drawerOpen: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      height: "100vh",
+      width: "200px", 
+      zIndex: 1000,
+      overflow: "auto", 
+      transition: "width 0.4s", 
     },
-    field: {
-        display: "flex",
-        marginTop: "4px",
-        marginLeft: "8px",
-        flexDirection: "column",
-        gridRowGap: tokens.spacingVerticalS,
+    drawerClosed: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      height: "100vh",
+      width: "0px", 
+      zIndex: 1000,
+      overflow: "hidden", 
+      transition: "width 0.4s", 
     },
-});
+    contentOpen: {
+      marginLeft: "260px", 
+    
+      width: "calc(100% - 260px)", 
+      transition: "margin-left 0.3s, width 0.4s",
+      height:'100vh'
+    },
+    contentClosed: {
+      marginLeft: "0px", 
+      width: "100%",
+      transition: "margin-left 0.3s, width 0.4s", 
+        height:'100vh'
+    },
+  });
 
 const Person = bundleIcon(Person20Filled, Person20Regular);
 const Dashboard1 = bundleIcon(Board20Filled, Board20Regular);
@@ -174,9 +189,13 @@ const Dashboard = ({
                         defaultSelectedCategoryValue="1"
                         open={isOpen}
                         type={type}
-                        style={{ height: '100vh',
-                            // overflow: "hidden",
-                         
+                        style={{ 
+                            position: 'fixed', // Fixes the NavDrawer in place
+                            top: 0,
+                            left: 0,
+                            height: '100vh', // Ensures full viewport height
+                            zIndex: 1000, // Ensures it stays above other content
+                            overflow: 'auto', 
                            
                             
                         }}
@@ -242,7 +261,7 @@ const Dashboard = ({
                         </NavDrawerBody>
                     </NavDrawer>
                  
-                    <div className={styles.content}>
+                    <div className={isOpen ? styles.contentOpen : styles.contentClosed}>
                   
                         <MasterContainer>
                     

@@ -40,7 +40,7 @@ const MicButton: React.FC<ButtonProps> = (props) => {
 //     type:any
 // }
 export const BAInput = (props: any) => {
-    const { value, onChange, type, disabled, label } = props
+    const { value, onChange, type, disabled, label,detail } = props
     const styles = useStyles();
 
     const beforeId = useId("content-before");
@@ -49,15 +49,15 @@ export const BAInput = (props: any) => {
     // className={styles.root}
     return (
         <div >
-            <div style={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
-                <Label htmlFor={inputId} className="d flex justify-center align-center" style={{ paddingInlineEnd: "5px", textWrap: 'nowrap', alignItems: 'center', width: '100%', color: tokens.colorBrandForeground2Pressed }}>
+            <div style={{ display: 'flex', justifyContent: 'start', alignItems: 'center'}}>
+               {!detail && <Label htmlFor={inputId} className="d flex justify-center align-center" style={{ paddingInlineEnd: "5px", textWrap: 'nowrap', alignItems: 'center', width: '100%', color: tokens.colorBrandForeground2Pressed }}>
                     {label}
                     <div className="ml-1 w-full h-0 mt-2" style={{border: `1px dashed ${tokens.colorBrandForeground2Pressed}`,fontWeight:'lighter'}}> </div>
-                </Label>
+                </Label>} 
                 {/* <Label htmlFor={beforeId}>{label}</Label> */}
                 <Input
                     // appearance="underline"
-                    style={{ width: '100%' }}
+                    style={{ width: '100%',backgroundColor:detail?tokens.colorNeutralBackground1Hover:'' }}
                     type={type}
                     id={inputId}
                     // id={beforeId}

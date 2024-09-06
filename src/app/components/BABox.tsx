@@ -3,7 +3,7 @@ import { tokens } from "@fluentui/react-components";
 
 export default function BABox(props: any) {
     // backgroundColor:'#F0F0F0',
-    return <div  style={{ backgroundColor: tokens.colorNeutralBackground1Hover, padding: '15px', marginTop: '15px', borderRadius: '5px' }}>
+    return <div  style={{ backgroundColor: tokens.colorNeutralBackground1Hover, margin:'15px',padding: '15px', marginTop: '10px', borderRadius: '5px' }}>
 
         <div className="border-b-2 " style={{
             borderColor: tokens.colorNeutralForeground2LinkSelected,

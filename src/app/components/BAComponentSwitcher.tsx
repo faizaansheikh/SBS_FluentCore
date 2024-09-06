@@ -14,12 +14,14 @@ type propsType = {
     disabledForm?: boolean,
     rowChangeEv?: any,
     rowIndex?: number,
-    view?: any
+    view?: any,
+    detail?:any
 }
 
 export default function BAComponentSwitcher(props: propsType) {
-    const { model, setModel, element, disabledForm, rowChangeEv, rowIndex, view } = props;
-
+    const { model, setModel, element, disabledForm, rowChangeEv, rowIndex, view,detail } = props;
+   
+    
 
     const fillModel = (key: any, val: any) => {
         model[key] = val;
@@ -33,7 +35,9 @@ export default function BAComponentSwitcher(props: propsType) {
     switch (element.elementType) {
         case "input":
             return <BAInput
+          
                 type={element.type}
+                detail={detail}
                 value={model[element.key] !== undefined ? model[element.key] : ''}
                 onChange={(ev: any) => {
 
@@ -70,6 +74,7 @@ export default function BAComponentSwitcher(props: propsType) {
         //     />
         case "select":
             return <BASelect
+            detail={detail}
                 multiple={element.multiple}
                 disabled={disabledForm || element.disabled}
                 label={element.label}
@@ -77,9 +82,11 @@ export default function BAComponentSwitcher(props: propsType) {
                 options={element.options ?? []}
                 value={model[element.key]}
                 onChange={(e: any, val: any, obj: any) => {
-                    setModel({ ...model, [element.key]: e })
+                   
+                    
+                    setModel({ ...model, [element.key]: e.target.value })
                     if(element.ChangeEv){
-                        element.ChangeEv(e,val,obj)
+                        element.ChangeEv(e.target.value,val,obj)
                     }
                 }}
             />
@@ -87,10 +94,11 @@ export default function BAComponentSwitcher(props: propsType) {
             return <BASearchLookup
                 label={element.label}
                 module={element.module}
+                detail={detail}
                 controller={element.controller}
                 filterConfig={element.filterConfig}
                 displayField={element.displayField || ""}
-                value={model && model[element.key]}
+                value={model[element.key] !== undefined ? model[element.key] : ''}
                 multiple={element.multiple}
                 singleValue={element.singleValue || ""}
                 fillObj={element.fillObj || ""}
@@ -103,22 +111,35 @@ export default function BAComponentSwitcher(props: propsType) {
                       element.onCancel(rowIndex);
                     }
                   }}
-                onChange={(val: any, obj: any) => {
+                onChange={(e:any,val: any, obj: any) => {
                    console.log(val);
                    
                     
-                    if (val !== '') {
+                    if (val !==  undefined) {
                         fillModel(element.key, val)
                         if (element.ChangeEv) {
                             
 
                             element.ChangeEv(null, val, obj);
                         }
-                    }else{
-                        setModel({
-                            ...model,
-                            [element.key] : ''
-                        })
+                    }
+                    else if(e !== null){
+                        fillModel(element.key, e.target.value)
+                        if (element.ChangeEv) {
+                            
+
+                            element.ChangeEv(null, e.target.value, obj);
+                        }
+                       
+                    }
+                    else{
+                        console.log('hfwjn')
+                        fillModel(element.key, '')
+                        if (element.ChangeEv) {
+                            
+
+                            element.ChangeEv(null, '', obj);
+                        }
                     }
 
                     
@@ -151,8 +172,6 @@ export default function BAComponentSwitcher(props: propsType) {
                     onChange={(e: any) => {
                         
                         setModel({ ...model, [element.key]: e.target.checked })
-                        // if(e.target.checked){
-                        // }
                         
                     }
                     }
@@ -187,5 +206,6 @@ export type formElement = {
     fillObj?: any,
     updateVal?: any,
     module?:any,
-    onCancel?:any
+    onCancel?:any,
+    detail?:any
 }

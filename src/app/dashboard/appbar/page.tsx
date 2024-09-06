@@ -110,6 +110,7 @@ export const AppBar = (props: any) => {
     // </Overflow>
     <div style={{
       position: 'sticky',
+      zIndex:1000 ,
       top: 0, right: 0, bottom: 0, left: 0, backgroundColor: tokens.colorNeutralBackground1Pressed, width: '100%', height: '50px', marginBottom: '0px',
       borderRadius: "0px", display: 'flex', justifyContent: 'space-between', alignItems: 'center'
     }}>

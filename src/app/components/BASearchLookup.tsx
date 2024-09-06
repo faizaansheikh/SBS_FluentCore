@@ -54,12 +54,13 @@ const MicButton: React.FC<ButtonProps> = (props) => {
 };
 
 export const BASearchLookup = (props: any) => {
-  const { value, onChange, type, disabled, label, controller, module, filterConfig, displayField, multiple, onCancel } = props
-
+  const { value, onChange, type, disabled, label, controller, detail, module, filterConfig, displayField, multiple, onCancel } = props
+ 
+  
   const inputId = useId("input");
 
   const [inpVal, setInpVal] = React.useState("");
-  const [checkVal, setCheckVal] = React.useState<any>(Object.values(filterConfig[0])[0] ?? '');
+  const [checkVal, setCheckVal] = React.useState<any>(filterConfig && filterConfig.length ? Object.values(filterConfig[0])[0] : '');
 
   const [property, setProperty] = React.useState({
     loading: false,
@@ -150,7 +151,7 @@ export const BASearchLookup = (props: any) => {
   }
   const handleRow = (i: any) => {
     if (!multiple) {
-      onChange(list[i][displayField], list[i])
+      onChange(null,list[i][displayField], list[i])
       setIsVisible2(false);
     }
 
@@ -165,7 +166,7 @@ export const BASearchLookup = (props: any) => {
   const closePopover = () => {
     setIsVisible(false);
   };
-  console.log(list)
+ 
   return (
     <div>
       <BADialog
@@ -358,36 +359,41 @@ export const BASearchLookup = (props: any) => {
       />
 
       <div style={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
-        <Label htmlFor={inputId} className="d flex justify-center align-center" style={{ paddingInlineEnd: "5px", textWrap: 'nowrap', alignItems: 'center', width: '100%', color: tokens.colorBrandForeground2Pressed }}>
+        {!detail && <Label htmlFor={inputId} className="d flex justify-center align-center" style={{ paddingInlineEnd: "5px", textWrap: 'nowrap', alignItems: 'center', width: '100%', color: tokens.colorBrandForeground2Pressed }}>
           {label}
           <div className="ml-1 w-full h-0 mt-2" style={{ border: `1px dashed ${tokens.colorBrandForeground2Pressed}`, fontWeight: 'lighter' }}> </div>
-        </Label>
-        {/* <Label htmlFor={beforeId}>{label}</Label> */}
+        </Label>}
+     
         <div className="popover-container w-[100%]" ref={popoverRef}>
-          <div className="popover-trigger" onClick={() => setIsVisible2(!isVisible2)}>
+          <div className="popover-trigger" 
+          // onClick={() => setIsVisible2(!isVisible2)}
+          >
             <div className="d flex justify-content-center align-center " style={{}}>
-              {/* <FilterFilled fontSize={20} />
-                  <div className="text-sm">Filter</div>
-                  <CaretDownFilled fontSize={20} /> */}
+            
               <Input
                 // appearance="underline"
-                style={{ width: '100%' }}
+                style={{ width: '100%',backgroundColor:detail?tokens.colorNeutralBackground1Hover:'' }}
                 type={type}
                 id={inputId}
                 // id={beforeId}
 
                 onKeyPress={handleKeyPress}
                 value={value}
-                onChange={onChange}
+                onChange={(e)=>onChange(e)}
                 disabled={disabled}
                 contentAfter={
-                  value.length === 0 ? <div style={{ cursor: 'pointer' }}>
+                   value === '' ? <div onClick={()=>{
+                    setIsVisible2(false)
+                    setIsVisible2(!isVisible2)
+                   }} style={{ cursor: 'pointer' }}>
                     <SearchFilled fontSize={18} />
                   </div> :
                     <div onClick={() => {
+                      setIsVisible2(false)
+                      onChange(null,undefined,'')
                       setArr([])
                       onCancel()
-                    }} style={{ cursor: 'pointer' }}>
+                    }} style={{ cursor: 'pointer',zIndex:10 }}>
                       <DismissCircleRegular fontSize={18} />
                     </div>
 
@@ -396,7 +402,7 @@ export const BASearchLookup = (props: any) => {
             </div>
           </div>
           {isVisible2 && (
-            <div className="lookup-content d flex flex-column justify-content-center align-center" style={{ backgroundColor: tokens.colorNeutralBackground1, fontSize: '14px', cursor: 'pointer', padding: '1px' }} >
+            <div className="lookup-content d flex flex-column justify-content-center align-center" style={{  left: detail?'40%':'',transform: detail?'translateX(-20%)':'',width:detail?'350px':'', backgroundColor: tokens.colorNeutralBackground1, fontSize: '14px', cursor: 'pointer', padding: '1px' }} >
 
               <Table
                 // role="grid"
@@ -493,7 +499,7 @@ export const BASearchLookup = (props: any) => {
                     if (arr.length === 0) {
                       onChange('')
                     } else {
-                      onChange(arr.join(","))
+                      onChange(null,arr.join(","))
                     }
 
                   }} /></span>}
