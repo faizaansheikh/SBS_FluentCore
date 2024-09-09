@@ -1,6 +1,7 @@
 "use client"
 
 import { BAInput } from "./BAInput";
+import { BALookup } from "./BALookup";
 import {BASearchLookup} from "./BASearchLookup";
 import { BASelect } from "./BASelect";
 import { BASwitch } from "./BASwitch";
@@ -91,7 +92,7 @@ export default function BAComponentSwitcher(props: propsType) {
                 }}
             />
         case "lookup":
-            return <BASearchLookup
+            return <BALookup
                 label={element.label}
                 module={element.module}
                 detail={detail}
@@ -112,10 +113,11 @@ export default function BAComponentSwitcher(props: propsType) {
                     }
                   }}
                 onChange={(e:any,val: any, obj: any) => {
-                   console.log(val);
+                
                    
                     
                     if (val !==  undefined) {
+              
                         fillModel(element.key, val)
                         if (element.ChangeEv) {
                             
@@ -124,6 +126,7 @@ export default function BAComponentSwitcher(props: propsType) {
                         }
                     }
                     else if(e !== null){
+                        
                         fillModel(element.key, e.target.value)
                         if (element.ChangeEv) {
                             
@@ -133,7 +136,7 @@ export default function BAComponentSwitcher(props: propsType) {
                        
                     }
                     else{
-                        console.log('hfwjn')
+                      
                         fillModel(element.key, '')
                         if (element.ChangeEv) {
                             

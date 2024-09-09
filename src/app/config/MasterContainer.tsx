@@ -24,9 +24,10 @@ export let openDialog: openDialogType
 export let closeDialog: () => void
 export let openLoader: any
 export let closeLoader: () => void
-import { initializeIcons } from '@fluentui/react';
+// import { initializeIcons } from '@fluentui/react';
 import { BADialog } from '../components/BADialog';
-initializeIcons();
+import { BAShowError } from '../components/BAShowError';
+// initializeIcons();
 
 export default function MasterContainer(props: any) {
 
@@ -51,6 +52,7 @@ export default function MasterContainer(props: any) {
 
     //#region show Error
     displayError = (message, severityType) => {
+        
         setMessage(message)
         setOpenError(true)
         setSeverity(severityType)
@@ -85,8 +87,8 @@ export default function MasterContainer(props: any) {
 
 
     return <>
-        {/* <BAFullScreenLoader open={loading} />
-        <BAShowError message={message} type={severity} open={openError} close={(e: boolean) => setOpenError(e)} /> */}
+       
+        <BAShowError message={message} type={severity} open={openError} close={(e: boolean) => setOpenError(false)} />
         <FAFullScreenLoader open={loading} />
         <BADialog
             isOpen={openModal}

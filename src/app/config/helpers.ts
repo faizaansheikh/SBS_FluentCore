@@ -1,26 +1,27 @@
 // import { formElem } from "../components/BAComponentSwitcher";
 // import { displayError } from "./MasterContainer";
 import moment from 'moment';
+import { displayError } from './MasterContainer';
 const encryptionKey = `${process.env.NEXT_APP_ENCRYPT_KEY}`;
 
 
 export const checkRequired = (elements:any, model:any) => {
-    let missing:any[] = []
+    let missing:any= []
     elements.forEach((x:any) => {
         if (x.required) {
             if (x.elementType == 'boolean') {
                 if ((typeof model[x.key] !== 'boolean')) {
-                    missing.push(`Required ${x.label}`)
+                    missing.push(` Required ${x.label}`)
                 }
             } else {
                 if (!model[x.key]) {
-                    missing.push(`Required ${x.label}`)
+                    missing.push(` Required ${x.label}`)
                 }
             }
         }
     })
     if (missing.length > 0) {
-        // displayError(missing, 'error')
+        displayError(missing, 'error')
         return false
     } else {
         return true

@@ -67,7 +67,7 @@ const BADialog: React.FC<DialogProps> = ({ isOpen, onClose, body, title, width, 
           display: flex;
           justify-content: center;
           align-items: center;
-          z-index: 1000;
+          z-index: 4000;
         }
 
         .dialog {
@@ -77,7 +77,7 @@ const BADialog: React.FC<DialogProps> = ({ isOpen, onClose, body, title, width, 
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
           // max-width: ${width}
           width: 100%;
-          z-index:3000;
+          z-index:5000;
             display:flex;
             flex-direction:column;
               // justify-content:end;

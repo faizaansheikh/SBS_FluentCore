@@ -56,16 +56,16 @@ import {
     ToggleLeftFilled,
     ToggleLeft48Filled,
 } from "@fluentui/react-icons";
-import { CommandBar, ICommandBarItemProps } from '@fluentui/react';
-import { initializeIcons } from '@fluentui/react/lib/Icons';
+// import { CommandBar, ICommandBarItemProps } from '@fluentui/react';
+// import { initializeIcons } from '@fluentui/react/lib/Icons';
 import { AppBar } from "./appbar/page";
-import { FontIcon } from '@fluentui/react/lib/Icon';
-import { mergeStyles } from '@fluentui/react/lib/Styling';
+// import { FontIcon } from '@fluentui/react/lib/Icon';
+// import { mergeStyles } from '@fluentui/react/lib/Styling';
 import { menues } from "./Menus";
 import { useRouter } from "next/navigation";
 import MasterContainer from "../config/MasterContainer";
 
-initializeIcons();
+// initializeIcons();
 
 const useStyles = makeStyles({
     root: {
@@ -165,12 +165,12 @@ const Dashboard = ({
             </Tooltip>
         );
     };
-    const iconClass = mergeStyles({
-        fontSize: 20,
+    // const iconClass = mergeStyles({
+        // fontSize: 20,
         // height: 50,
         // width: 50,
         // margin: '25px 0px',
-    });
+    // });
     const [isClient, setIsClient] = React.useState(false)
     const changeRoute = (route: any) => {
         router.push(route)

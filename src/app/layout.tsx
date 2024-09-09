@@ -2,12 +2,16 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css"; // Your global CSS
-import { FluentProvider, teamsLightTheme } from "@fluentui/react-components";
-import { Provider } from "react-redux";
-import store from "./config/redux/store";
-import { Providers } from "./providers";
-import Login from "./login/page";
+
+
 import MasterContainer from "./config/MasterContainer";
+
+import { FluentProviders } from "./FluentProviders";
+import { Providers } from "./Providers";
+
+
+
+
 
 
 
@@ -33,14 +37,17 @@ export default function RootLayout({
 
 
       <body>
-        <Providers>
-          <MasterContainer>
-            
-            {children}
+       
+          <Providers>
+            <MasterContainer>
+
+            <FluentProviders>{children}</FluentProviders>
             </MasterContainer>
 
 
-        </Providers>
+          </Providers>
+        
+
       </body>
 
     </html>

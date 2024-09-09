@@ -28,7 +28,9 @@ import { BAInput } from "./BAInput";
 import { BASelect } from "./BASelect";
 import FALoader from "./FALoader";
 import './custom.css'
-import { json } from "stream/consumers";
+import type { FC } from "react";
+// import { BAPopover } from "./BAPopover";
+import dynamic from "next/dynamic";
 const useStyles = makeStyles({
   root: {
     display: "flex",
@@ -69,6 +71,7 @@ export const BASearchLookup = (props: any) => {
   });
   const [isVisible, setIsVisible] = React.useState(false);
   const [isVisible2, setIsVisible2] = React.useState(false);
+  const [popoverID, setPopoverID] = React.useState<any>(null);
   const popoverRef = React.useRef<HTMLDivElement>(null);
   const [loader, setLoader] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false)
@@ -160,13 +163,25 @@ export const BASearchLookup = (props: any) => {
 
 
   const togglePopover = () => {
+   
     setIsVisible(!isVisible);
   };
 
   const closePopover = () => {
     setIsVisible(false);
+    setPopoverID(null)
   };
- 
+  // const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+  //   // Close the popover if the newly focused element is outside the popover
+  //   if (
+  //     popoverRef.current 
+  //     && 
+  //     !popoverRef.current.contains(event.relatedTarget as Node)
+  //   ) {
+  //     setIsVisible2(false);
+  //   }
+  // };
+  console.log(popoverID,inputId)
   return (
     <div>
       <BADialog
@@ -357,7 +372,7 @@ export const BASearchLookup = (props: any) => {
         }
 
       />
-
+      {/* <BAPopover/> */}
       <div style={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
         {!detail && <Label htmlFor={inputId} className="d flex justify-center align-center" style={{ paddingInlineEnd: "5px", textWrap: 'nowrap', alignItems: 'center', width: '100%', color: tokens.colorBrandForeground2Pressed }}>
           {label}
@@ -383,8 +398,23 @@ export const BASearchLookup = (props: any) => {
                 disabled={disabled}
                 contentAfter={
                    value === '' ? <div onClick={()=>{
-                    setIsVisible2(false)
                     setIsVisible2(!isVisible2)
+                    // setTimeout(() => {
+                    //   setIsVisible2(false)
+                    // }, 200);
+                    // setIsVisible2(false)
+                    // setIsVisible2(!isVisible2)
+                    if(popoverID === inputId){
+                      setPopoverID(null)
+                      console.log('a')
+                      
+                    }else{
+                      setPopoverID(inputId)
+                      console.log('b')
+                     
+                    }
+                  
+                    
                    }} style={{ cursor: 'pointer' }}>
                     <SearchFilled fontSize={18} />
                   </div> :
@@ -401,8 +431,15 @@ export const BASearchLookup = (props: any) => {
               />
             </div>
           </div>
-          {isVisible2 && (
-            <div className="lookup-content d flex flex-column justify-content-center align-center" style={{  left: detail?'40%':'',transform: detail?'translateX(-20%)':'',width:detail?'350px':'', backgroundColor: tokens.colorNeutralBackground1, fontSize: '14px', cursor: 'pointer', padding: '1px' }} >
+          {/* isVisible2 && */}
+          { popoverID === inputId && isVisible2 && (
+            <div 
+            className="lookup-content d flex flex-column justify-content-center align-center"
+            style={{  left: detail?'40%':'',transform: detail?'translateX(-20%)':'',width:detail?'350px':'', backgroundColor: tokens.colorNeutralBackground1, fontSize: '14px', cursor: 'pointer', padding: '1px' }}
+            // onBlur={handleBlur}
+            tabIndex={-1} // Make the popover focusable
+            ref={popoverRef}
+            >
 
               <Table
                 // role="grid"
@@ -419,8 +456,8 @@ export const BASearchLookup = (props: any) => {
                       <TableHeaderCell key={i}>
                         <TableCellLayout style={{
                           color: tokens.colorNeutralStrokeAccessibleHover,
-                          padding: '9px',
-                          paddingLeft: i === 0 ? '30px' : ''
+                          padding: '3px',
+                          paddingLeft: i === 0 ? '10px' : ''
                         }}>
                           {el.label}
                         </TableCellLayout>
@@ -498,8 +535,10 @@ export const BASearchLookup = (props: any) => {
                   {multiple && <span className="text-lg pl-3"><SaveFilled onClick={() => {
                     if (arr.length === 0) {
                       onChange('')
+                       setIsVisible2(false)
                     } else {
                       onChange(null,arr.join(","))
+                       setIsVisible2(false)
                     }
 
                   }} /></span>}
