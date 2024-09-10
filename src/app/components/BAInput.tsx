@@ -40,7 +40,7 @@ const MicButton: React.FC<ButtonProps> = (props) => {
 //     type:any
 // }
 export const BAInput = (props: any) => {
-    const { value, onChange, type, disabled, label,detail } = props
+    const { value, onChange, type, disabled, label,detail,readOnly } = props
     const styles = useStyles();
 
     const beforeId = useId("content-before");
@@ -64,6 +64,7 @@ export const BAInput = (props: any) => {
                     value={value}
                     onChange={onChange}
                     disabled={disabled}
+                    readOnly={readOnly}
                 />
 
             </div>

@@ -264,10 +264,10 @@ export default function UserForm() {
    
     if (checkRequired(formElem, updated)) {
       setProperty({ ...property, saveLoading: true });
-      UserService.Save({ ...updated }, updated.rowID)
+      UserService.Save({ ...updated }, updated.Id)
         .then((res: any) => {
           setProperty({ ...property, saveLoading: false });
-          displayError('Save successfully', "success");
+          displayError(res.message, "success");
           goBack();
         })
         .catch((err: any) => {
@@ -286,8 +286,8 @@ export default function UserForm() {
       
         setModel({
            ...res.data,
-          //  Roles:res.data.Roles.map((r:any)=>r.RoleName),
-          //  Locations:res.data.Locations.map((l:any)=>l.Location)
+           Roles1:res.data.Roles.map((r:any)=>r.RoleName).join(','),
+           Locations1:res.data.Locations.map((l:any)=>l.Location).join(',')
          });
         setProperty({ ...property, saveLoading: false });
       })
@@ -301,12 +301,17 @@ export default function UserForm() {
       getDataById(params.id);
     }
   }, []);
-  console.log(model)
+
   return <>
     <div>
 
       <div className="mt-3">
-        <FAFormHeader title={"Users"} saveRec={save} />
+        <FAFormHeader 
+          title={"Users"} 
+          saveRec={save} 
+       
+          
+          />
       </div>
       <BABox title='Users' show={'Show less'}>
         {property.saveLoading ? <FALoader /> : 

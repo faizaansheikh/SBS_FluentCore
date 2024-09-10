@@ -28,16 +28,18 @@ import type { ToolbarProps } from "@fluentui/react-components";
 import { BAButton } from "./BAButton";
 const useStyles = makeStyles({
     toolbar: {
-
+      
         justifyContent: "space-between",
         marginTop: '10px',
         borderTop: '1px solid lightgrey',
-        borderBottom: '1px solid lightgrey'
+        borderBottom: '1px solid lightgrey',
+    
+       
     },
 });
 const BAScreenHeader = (props: any) => {
     const farGroupStyles = useStyles();
-    const {  title,onClick } = props
+    const {  title,onClick,setState,setLoading,loading,apiCall } = props
 
     return (
         <Toolbar aria-label="Default" className={farGroupStyles.toolbar}>
@@ -63,7 +65,14 @@ const BAScreenHeader = (props: any) => {
 
                 <ToolbarDivider />
 
-                <BAButton style={{ fontSize: '20px' }} icon={<FilterFilled color="black" fontSize={36} />} label={''} />
+                <BAButton onClick={()=>{
+                    setLoading({...loading,filterLoading:true})
+                    setState({})
+                    apiCall({},'')
+                    setTimeout(() => {
+                        setLoading({...loading,filterLoading:false})
+                    }, 200);
+                    }} style={{ fontSize: '20px' }} icon={<FilterFilled color="black" fontSize={36} />} label={''} />
 
             </ToolbarGroup>
 

@@ -1,5 +1,6 @@
 "use client"
 
+import { BACheckBox } from "./BACheckBox";
 import { BAInput } from "./BAInput";
 import { BALookup } from "./BALookup";
 import {BASearchLookup} from "./BASearchLookup";
@@ -39,6 +40,7 @@ export default function BAComponentSwitcher(props: propsType) {
           
                 type={element.type}
                 detail={detail}
+                readOnly={element.readOnly}
                 value={model[element.key] !== undefined ? model[element.key] : ''}
                 onChange={(ev: any) => {
 
@@ -73,6 +75,28 @@ export default function BAComponentSwitcher(props: propsType) {
         //         label={element.label}
         //         loading={element.loading}
         //     />
+
+        case "checkbox":
+            return (
+              <BACheckBox
+                required={element.required}
+                // disabled={disabled || element.disabled}
+                // readOnly={readOnly || element.readOnly}
+                label={element.label}
+                value={model && model[element.key] ? model[element.key] : null}
+                onChange={(ev) => {
+                  fillModel(element.key, ev.target.checked);
+                  if (element.ChangeEv) {
+                    element.ChangeEv(ev, ev.target.checked, element, rowIndex);
+                  }
+                  if (rowChangeEv) {
+                    rowChangeEv(ev, ev.target.checked, element, rowIndex);
+                  }
+                }}
+              />
+            );
+            break;
+
         case "select":
             return <BASelect
             detail={detail}
@@ -210,5 +234,6 @@ export type formElement = {
     updateVal?: any,
     module?:any,
     onCancel?:any,
-    detail?:any
+    detail?:any,
+    readOnly?:any
 }

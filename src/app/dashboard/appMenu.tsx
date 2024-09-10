@@ -737,65 +737,65 @@ export const appMenu = [
   },
 ];
 
-// export const jsonData = () => {
-//   const transformedData = {};
+export const jsonData = () => {
+  const transformedData : any= {};
 
-//   appMenu.forEach((menu) => {
-//     const moduleName = menu.module;
-//     transformedData[moduleName] = [];
+  appMenu.forEach((menu) => {
+    const moduleName = menu.module;
+    transformedData[moduleName] = [];
 
-//     menu.menues.forEach((submenu) => {
-//       if (submenu.children) {
-//         submenu.children.forEach((child) => {
-//           if (submenu.name === "Setup") {
-//             transformedData[moduleName].push({
-//               ControlID: child.ControlID,
-//               ControlName: child.name,
-//               ControlType: submenu.name,
-//               Create: false,
-//               View: false,
-//               Edit: false,
-//               Delete: false,
-//             });
-//           } else if (submenu.name === "Transactions") {
-//             transformedData[moduleName].push({
-//               ControlID: child.ControlID,
-//               ControlName: child.name,
-//               ControlType: submenu.name,
-//               Create: false,
-//               View: false,
-//               Edit: false,
-//               Delete: false,
-//               Post: false,
-//             });
-//           } else if (
-//             submenu.name === "Reports" ||
-//             submenu.name === "Utilities" ||
-//             submenu.name === "Inquiries"
-//           ) {
-//             transformedData[moduleName].push({
-//               ControlID: child.ControlID,
-//               ControlName: child.name,
-//               ControlType: submenu.name,
-//               View: false,
-//             });
-//           }
-//         });
-//       } else {
-//         transformedData[moduleName].push({
-//           ControlID: submenu.ControlID,
-//           ControlName: submenu.name,
-//           ControlType: "Setup",
-//           Create: false,
-//           View: false,
-//           Edit: false,
-//           Delete: false,
-//         });
-//       }
-//     });
-//   });
+    menu.menues.forEach((submenu:any) => {
+      if (submenu.children) {
+        submenu.children.forEach((child:any) => {
+          if (submenu.name === "Setup") {
+            transformedData[moduleName].push({
+              ControlID: child.ControlID,
+              ControlName: child.name,
+              ControlType: submenu.name,
+              Create: false,
+              View: false,
+              Edit: false,
+              Delete: false,
+            });
+          } else if (submenu.name === "Transactions") {
+            transformedData[moduleName].push({
+              ControlID: child.ControlID,
+              ControlName: child.name,
+              ControlType: submenu.name,
+              Create: false,
+              View: false,
+              Edit: false,
+              Delete: false,
+              Post: false,
+            });
+          } else if (
+            submenu.name === "Reports" ||
+            submenu.name === "Utilities" ||
+            submenu.name === "Inquiries"
+          ) {
+            transformedData[moduleName].push({
+              ControlID: child.ControlID,
+              ControlName: child.name,
+              ControlType: submenu.name,
+              View: false,
+            });
+          }
+        });
+      } else {
+        transformedData[moduleName].push({
+          ControlID: submenu.ControlID,
+          ControlName: submenu.name,
+          ControlType: "Setup",
+          Create: false,
+          View: false,
+          Edit: false,
+          Delete: false,
+        });
+      }
+    });
+  });
 
-//   return transformedData;
-// };
+  return transformedData;
+};
 
 

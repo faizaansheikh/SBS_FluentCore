@@ -358,7 +358,8 @@ export const BALookup = (props: any) => {
           // id={beforeId}
 
           // onKeyPress={handleKeyPress}
-          value={params.id && multiple ? model[fillObj].map((x:any)=>x[displayField]).join(','):value}
+          // value={params.id && multiple ? model[fillObj].map((x:any)=>x[displayField]).join(','):value}
+          value={value}
           onChange={(e) => onChange(e)}
           disabled={disabled}
           contentAfter={

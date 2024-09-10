@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import {
- 
+
   CalendarMonthRegular,
 } from "@fluentui/react-icons";
 import {
@@ -19,6 +19,8 @@ import {
   useFocusableGroup,
   Tag,
   tokens,
+  Tooltip,
+  Input,
 } from "@fluentui/react-components";
 import BAScreenHeader from "./BAScreenHeader";
 import { BAButton } from "./BAButton";
@@ -42,11 +44,16 @@ export const BASetupGrid = (props: any) => {
   const router = useRouter()
   const keyboardNavAttr = useArrowNavigationGroup({ axis: "grid" });
   const [gridCols, setGridCols] = useState([...config]);
+
+
   const [datasource, setDatasource] = useState<any>([]);
   const [totalRecords, setTotalRecords] = useState(0);
-  const [gridSearchObj, setGridSearchObj] = useState({});
+  const [gridSearchObj, setGridSearchObj] = useState<any>({});
   const [isHovered, setIsHovered] = useState(false);
+  const [flag, setFlag] = useState(true);
+  const [headerName, setHeaderName] = useState('');
   const [property, setProperty] = useState({
+    filterLoading: false,
     loading: false,
     deleteLoading: false,
     isSelecting: false,
@@ -100,116 +107,166 @@ export const BASetupGrid = (props: any) => {
     pageNo: 1,
     selector: config.map((x: any) => x.field).join(","),
   };
-  let getData = (SearchObj?: any) => {
-    setProperty({ ...property, loading: true });
+  let getData = (object?:any,filter?: any) => {
+    if (filter) {
+      setProperty({ ...property, filterLoading: true })
+    } else {
+      setProperty({ ...property, loading: true });
+    }
+
 
     let obj = {
       ...SearchCriteria,
-      SearchBy: JSON.stringify(SearchObj ?? gridSearchObj),
+      SearchBy: JSON.stringify(object ?? gridSearchObj),
     };
 
     GeneralCoreService(`${module}/${FormName}`)
       .Register(obj)
       .then((res: any) => {
-        console.log([...res.data.rows]);
+
         setDatasource([...res.data.rows]);
         setTotalRecords(res.data.TotalCount);
-        setProperty({ ...property, loading: false });
+        if (filter) {
+          setProperty({ ...property, filterLoading: false })
+        } else {
+          setProperty({ ...property, loading: false });
+        }
       })
       .catch((err) => {
-        setProperty({ ...property, loading: false });
+        if (filter) {
+          setProperty({ ...property, filterLoading: false })
+        } else {
+          setProperty({ ...property, loading: false });
+        }
       });
   };
 
   const handleEdit = (i: any) => {
-      console.log(datasource[i][primaryKey]);
-      
+
+
     router.push(`${path}/${datasource[i][primaryKey]}`)
   }
   const addEdit = () => {
-   
+
 
     router.push(path)
   }
+  const handleFilter = (name: any) => {
+
+
+    let filters = gridCols.filter((x: any) => x.title !== name)
+    setGridCols([...filters])
+
+
+
+  }
+
   React.useEffect(() => {
+
     getData();
 
   }, []);
-
+  console.log(gridSearchObj)
   return (
 
-    <div>
-     
-      <BAScreenHeader title={title} onClick={addEdit} />
-      {property.loading ? <FALoader /> : 
-      <Table
-        {...keyboardNavAttr}
-        role="grid"
-        aria-label="Table with grid keyboard navigation"
-        style={{ minWidth: "620px", marginTop: '10px', backgroundColor: tokens.colorNeutralBackground1Selected }}
-      >
+    <div className="p-2">
 
-        <TableHeader style={{ height: '20px', position: 'sticky', top: 0, right: 0, bottom: 0, left: 0, borderBottom: '2px solid black' }}>
+      <div >
+        <BAScreenHeader title={title} onClick={addEdit} apiCall={getData} setState={setGridSearchObj} loading={property} setLoading={setProperty}/>
+      </div>
+      {property.loading ? <FALoader /> :
+        <Table
+          {...keyboardNavAttr}
+          role="grid"
+          aria-label="Table with grid keyboard navigation"
+          style={{ minWidth: "620px", marginTop: '10px', backgroundColor: tokens.colorNeutralBackground1Selected }}
+        >
 
-          <TableRow>
-            {gridCols.map((el: any, i: any) => (
-              <TableHeaderCell key={i}
-              style={{
-                paddingLeft: i === 0 ? '25px' : '', cursor: i === 0 ? 'pointer' : '',
-       
-              }}
-              >
-                <TableCellLayout style={{ color: tokens.colorNeutralStrokeAccessibleHover, padding: '12px 0px' }}>
+          <TableHeader style={{ height: '20px', borderBottom: '2px solid black' }}>
 
-                  {el.title}
-                </TableCellLayout>
-
-
-              </TableHeaderCell>
-            ))}
-            {/* <TableHeaderCell>
-              <TableCellLayout style={{ display: 'flex', justifyContent: 'end' }} >
-                Actions
-              </TableCellLayout>
-            </TableHeaderCell> */}
-
-
-
-          </TableRow>
-
-        </TableHeader>
-
-        <TableBody>
-
-          {datasource && datasource.length && datasource.map((item: any, i: any) => (
-            <TableRow key={i}>
-              {config.map((x: any, ind: any) => (
-                <TableCell
+            <TableRow>
+              {gridCols.map((el: any, i: any) => (
+                <TableHeaderCell key={i}
                   style={{
-                    paddingLeft: ind === 0 ? '25px' : '', cursor: ind === 0 ? 'pointer' : '',
-                    color: ind === 0 ? tokens.colorNeutralForeground2BrandHover : ''
+                    paddingLeft: i === 0 ? '25px' : '', cursor: i === 0 ? 'pointer' : '',
+
                   }}
-                  tabIndex={0}
-                  role="gridcell"
-                  onClick={(e: any) => handleEdit(i)}
+                  onMouseEnter={() => {
+                    setIsHovered(true)
+                    setHeaderName(el.title)
+                  }}
+                  onMouseLeave={() => setIsHovered(false)}
                 >
-                  {/* {x.field === 'IsActive' && renderTag(x,item)} */}
-                  {renderTag(x, item)}
-                  {item[x.field]}
-                </TableCell>
+
+                  <TableCellLayout style={{ color: tokens.colorNeutralStrokeAccessibleHover, padding: '12px 0px' }}>
+
+                    {el.title} {(isHovered && headerName === el.title) && <span onClick={() => handleFilter(el.title)} className="cursor-pointer font-bold text-md">x</span>}
+                  </TableCellLayout>
+
+
+
+
+                </TableHeaderCell>
               ))}
-              {/* <TableCell tabIndex={0} {...focusableGroupAttr}>
-                <TableCellLayout style={{ display: 'flex', justifyContent: 'end' }}>
-                  <Button icon={<EditRegular />} aria-label="Edit" />
-                  <Button icon={<DeleteRegular />} aria-label="Delete" />
-                </TableCellLayout>
-              </TableCell> */}
+
+
             </TableRow>
-          ))}
+
+          </TableHeader>
+
+          <TableBody>
+            <TableRow>
+
+              {gridCols.map((x: any) => <TableCell
+                style={{
+                  // paddingLeft: '25px',
+                  // color: i === 0 ? tokens.colorNeutralForeground2BrandHover : ''
+                }}
+                tabIndex={0}
+                role="gridcell"
+              // onClick={(e: any) => handleEdit(i)}
+              >
+                {" "}
+                <Input appearance="underline"
+                  onBlur={(e: any) => {
+
+                    gridSearchObj[x.field] = e.target.value
+                    setGridSearchObj({ ...gridSearchObj })
+                    getData(null,'filter')
+                  }}
+                />
+              </TableCell>)}
+
+            </TableRow>
+            {property.filterLoading ? <FALoader /> : datasource && datasource.length && datasource.map((item: any, i: any) => (
+
+              <TableRow key={i}>
+
+                {gridCols.map((x: any, ind: any) => (
+                  <TableCell
+                    style={{
+                      paddingLeft: ind === 0 ? '25px' : '', cursor: ind === 0 ? 'pointer' : '',
+                      color: ind === 0 ? tokens.colorNeutralForeground2BrandHover : ''
+                    }}
+                    tabIndex={0}
+                    role="gridcell"
+                    onClick={(e: any) => handleEdit(i)}
+                  >
+                    {/* {x.field === 'IsActive' && renderTag(x,item)} */}
+                    {renderTag(x, item)}
+                    {item[x.field]}
+                  </TableCell>
 
 
-        </TableBody>
-      </Table>}
+                ))}
+             
+              </TableRow>
+            ))}
+
+
+
+          </TableBody>
+        </Table>}
 
       <BAPagination
         totalCount={totalRecords}

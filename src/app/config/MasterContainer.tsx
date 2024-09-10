@@ -48,6 +48,7 @@ export default function MasterContainer(props: any) {
 
 
     const [loading, setLoading] = useState(false)
+    const [BTN, setBTN] = useState('')
 
 
     //#region show Error
@@ -61,13 +62,13 @@ export default function MasterContainer(props: any) {
 
 
     //#region Dialog Work
-    openDialog = (title = "", body = null, footer = null, width = '60vw') => {
+    openDialog = (title = "", body = null, customBtns = null,width = '60vw') => {
         setOpenModal(true)
         setModalTitle(title)
         setModalBody(body)
-        setModalFooter(footer)
+        setModalFooter(customBtns)
+        
         setModalWidth(width ?? '60vw')
-
         // setOnCloseCallback(() => onClose)
     }
 
@@ -93,11 +94,10 @@ export default function MasterContainer(props: any) {
         <BADialog
             isOpen={openModal}
             title={modalTitle}
-
             onClose={closeDialog}
             body={modalBody}
             width={'700px'}
-        // footer={modalFooter}
+            customBtns={modalFooter}
         />
 
 

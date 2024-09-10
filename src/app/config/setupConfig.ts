@@ -1,4 +1,4 @@
-const CreateConfig = (
+let CreateConfig = (
     field:any,
     searchable:any,
     show:any,
@@ -21,10 +21,15 @@ const CreateConfig = (
     };
   };
 
-  export const UsersConfig = [
+  export let UsersConfig = [
     CreateConfig("UserName", true, true, "User Name", "text", null, "lg"),
     CreateConfig("Designation", true, true, "Designation", "text", null, "lg"),
     CreateConfig("Email", true, true, "Email", "text", null, "lg"),
     CreateConfig("ContactNo", true, true, "Contact No", "text", null, "lg"),
     CreateConfig("IsActive", true, true, "Is Active", "boolean", null, "md"),
+  ];
+  export const RolesConfig = [
+    CreateConfig("RoleName", true, true, "Role Name", "text", null, "xl"),
+    CreateConfig("Remarks", true, true, "Remarks", "text", null, "xl"),
+    CreateConfig("IsActive", true, true, "Is Active", "boolean", null, "xl"),
   ];

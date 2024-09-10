@@ -2,7 +2,7 @@
 
 import BAComponentSwitcher, { formElement } from "./BAComponentSwitcher"
 
-import { Stack } from '@fluentui/react';
+
 type propsType = {
     model: any,
     setModel: any,

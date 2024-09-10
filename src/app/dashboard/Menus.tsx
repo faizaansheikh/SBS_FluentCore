@@ -9,7 +9,7 @@ export const menues = [
                 child:[
                     { name: 'Company Setup', route: '/' },
                     { name: 'Users', route: '/dashboard/administration/users' },
-                    { name: 'Roles', route: '/' },
+                    { name: 'Roles', route: '/dashboard/administration/role' },
                     { name: 'Approval Workflow', route: '/' },
                     { name: 'Period', route: '/' },
                     { name: 'Tax Detail', route: '/' },

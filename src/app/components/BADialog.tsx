@@ -11,23 +11,24 @@ interface DialogProps {
   body: React.ReactNode;
   title: any,
   width: any,
-  btnLabel?: string,
+ 
   height?: string,
-  extraField?:any,
-  extraHeader?:any
+  extraField?: any,
+  extraHeader?: any,
+  customBtns?: any
 }
 
-const BADialog: React.FC<DialogProps> = ({ isOpen, onClose, body, title, width, handleClick, btnLabel, height,extraField,extraHeader }) => {
+const BADialog: React.FC<DialogProps> = ({ isOpen, onClose, body, title, width, handleClick, customBtns, height, extraField, extraHeader }) => {
   if (!isOpen) return null;
 
   return (
     <div className="backdrop" >
-      <div className="dialog" style={{backgroundColor:tokens.colorNeutralBackground1,display:'flex',flexDirection:'column', maxWidth: width ? width : '600px', height: height ? height : '200px' }}>
+      <div className="dialog" style={{ backgroundColor: tokens.colorNeutralBackground1, display: 'flex', flexDirection: 'column', maxWidth: width ? width : '600px', height:'' }}>
         <div className='d flex justify-between align-center'>
           <div className='d flex justify-between align-center '>
             <h1 className='text-xl mr-2'>{title}</h1>
             {extraHeader && <h1 className='text-xl mr-2'>{extraHeader}</h1>}
-            
+
           </div>
           <div>
 
@@ -37,23 +38,27 @@ const BADialog: React.FC<DialogProps> = ({ isOpen, onClose, body, title, width, 
           </div>
         </div>
         {/* ////////body */}
-        <div style={{height:title !== 'Confirmation'?'386px':''}}>
+        <div style={{ height: title !== 'Confirmation' ? '' : '' }}>
           {body}
         </div>
         {/* ////////body */}
-       
-          <div className='footer'>
-            <div className='text-lg'>{extraField}</div>
-            <div>
-              <button className="close-btn mr-2" onClick={handleClick}>
-                {btnLabel ? btnLabel : 'OK'}
-              </button>
-              <button style={{border:'1px solid black'}} className="cancel-btn" onClick={onClose}>
-                Cancel
-              </button>
-            </div>
+        <div className='footer'>
+          <div className='text-lg'>{extraField}</div>
+
+          <div className='d flex justify-center items-center'>
+            {customBtns ? customBtns : <button className="close-btn mr-2" onClick={handleClick}>
+             Ok
+            </button>}
+
+            <button style={{ border: '1px solid black' }} className="cancel-btn" onClick={onClose}>
+              Cancel
+            </button>
           </div>
-       
+
+
+        </div>
+
+
       </div>
 
       <style jsx>{`
@@ -77,6 +82,7 @@ const BADialog: React.FC<DialogProps> = ({ isOpen, onClose, body, title, width, 
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
           // max-width: ${width}
           width: 100%;
+        
           z-index:5000;
             display:flex;
             flex-direction:column;
@@ -96,6 +102,7 @@ const BADialog: React.FC<DialogProps> = ({ isOpen, onClose, body, title, width, 
         }
           .cancel-btn{
              margin-top: 10px;
+             margin-left: 10px;
           padding: 10px 20px;
           // background-color: #0070f3;
           border:2px solid black;
