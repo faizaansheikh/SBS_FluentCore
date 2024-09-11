@@ -1,6 +1,9 @@
 "use client"
 
+import { BAButton } from "./BAButton";
 import { BACheckBox } from "./BACheckBox";
+import { BADataText } from "./BADataText";
+import { BADate } from "./BADate";
 import { BAInput } from "./BAInput";
 import { BALookup } from "./BALookup";
 import {BASearchLookup} from "./BASearchLookup";
@@ -23,7 +26,7 @@ type propsType = {
 export default function BAComponentSwitcher(props: propsType) {
     const { model, setModel, element, disabledForm, rowChangeEv, rowIndex, view,detail } = props;
    
-    
+ 
 
     const fillModel = (key: any, val: any) => {
         model[key] = val;
@@ -48,6 +51,9 @@ export default function BAComponentSwitcher(props: propsType) {
                         ...model,
                         [element.key]: ev.target.value
                     })
+                    if (element.ChangeEv) {
+                        element.ChangeEv(ev, ev.target.value, element);
+                      }
                     if (rowChangeEv) {
                         rowChangeEv(ev, (element.type == 'number' ? Number(ev.target.value) : ev.target.value), element, rowIndex)
                     }
@@ -68,13 +74,14 @@ export default function BAComponentSwitcher(props: propsType) {
         //         required={element.required}
         //         label={element.label}
         //     />
-        // case "button":
-        //     return <BAButton
-        //         onClick={element.onClick}
-        //         disabled={disabledForm || element.disabled}
-        //         label={element.label}
-        //         loading={element.loading}
-        //     />
+        case "button":
+            return <BAButton
+                onClick={element.onClick}
+                disabled={disabledForm || element.disabled}
+                label={element.label}
+                loading={element.loading}
+                style={element.style}
+            />
 
         case "checkbox":
             return (
@@ -173,19 +180,23 @@ export default function BAComponentSwitcher(props: propsType) {
 
                 }}
             />
-        // case "date":
-        //     return (
-        //         <BADate
-        //             required={element.required}
-        //             disabled={element.disabled}
-        //             label={element.label}
+        case "date":
+            return (
+                <BADate
+                    required={element.required}
+                    disabled={element.disabled}
+                    label={element.label}
 
-        //             value={model[element.key]}
-        //             onChange={(date: any, dateString: any) => {
-        //                 setModel({ ...model, [element.key]: dateString });
-        //             }}
-        //         />
-        //     )
+                    value={model[element.key]}
+                    onChange={(date: any, dateString: any) => {
+                        
+                        
+                        setModel({ ...model, [element.key]: dateString });
+                    }
+                }
+
+                />
+            );
         case "boolean":
             return (
 
@@ -194,18 +205,35 @@ export default function BAComponentSwitcher(props: propsType) {
                     required={element.required}
                     disabled={element.disabled}
                     label={element.label}
-                    // value={model && model[element.key] ? model[element.key] : null}
+                    detail={detail}
                     value={model[element.key] !== undefined ? model[element.key] : false}
                     onChange={(e: any) => {
                         
                         setModel({ ...model, [element.key]: e.target.checked })
-                        
+                        if (element.ChangeEv) {
+                    
+                            element.ChangeEv(e, e.target.checked);
+                        }
                     }
                     }
 
                
                 />
             );
+            case "textarea":
+                return (
+    
+    
+                    <BADataText
+                       
+                      
+                        label={element.label}
+                        body={element.body}
+    
+                   
+                    />
+                );
+            
         default:
             return null;
     }
@@ -235,5 +263,7 @@ export type formElement = {
     module?:any,
     onCancel?:any,
     detail?:any,
-    readOnly?:any
+    readOnly?:any,
+    body?:any,
+    style?:any
 }

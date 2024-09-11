@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import BAComponentSwitcher from "./BAComponentSwitcher"
 import './custom.css'
 export default function BAFormGrid(props: any) {
-    const { gridCols, datasource, setDatasource, disabledAddRow, roles } = props
+    const { gridCols, datasource, setDatasource, disabledAddRow, roles,height } = props
     // const [datasource, setDatasource] = useState<any>([{}])
 
     const [rowObj, setRowObj] = useState({});
@@ -54,7 +54,7 @@ export default function BAFormGrid(props: any) {
                 <div></div>
             </div>
             {/* Header */}
-            <div style={{ overflowX: 'scroll', overflowY: 'scroll', width: '100%', height: '300px' }}>
+            <div style={{ overflowX: 'scroll', overflowY: 'scroll', width: '100%', height: height?height:'300px' }}>
                 <Table
                     // {...keyboardNavAttr}
                     role="grid"

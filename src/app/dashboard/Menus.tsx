@@ -11,7 +11,7 @@ export const menues = [
                     { name: 'Users', route: '/dashboard/administration/users' },
                     { name: 'Roles', route: '/dashboard/administration/role' },
                     { name: 'Approval Workflow', route: '/' },
-                    { name: 'Period', route: '/' },
+                    { name: 'Period', route: '/dashboard/administration/period' },
                     { name: 'Tax Detail', route: '/' },
                     { name: 'Currencies', route: '/' },
                     { name: 'Aging Buckets', route: '/' },

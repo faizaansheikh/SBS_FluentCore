@@ -16,10 +16,11 @@ import { useParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { jsonData } from "../../appMenu";
 import { BACheckBox } from "@/app/components/BACheckBox";
+import { RolesService } from "@/app/config/ScreenServices";
 
 export default function RoleForm() {
     const module = jsonData()
-    console.log(module)
+   
     const params = useParams()
     const [formRoles, setFormRoles] = useState<any>([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -56,41 +57,57 @@ export default function RoleForm() {
     ];
 
     const save = () => {
-
-        const { Roles1, Locations1, ...updated } = model
-
-
-        if (checkRequired(formElem, updated)) {
+        const filteredList = fetchedRights.filter(
+          (el:any) =>
+            el.Create === true ||
+            el.View === true ||
+            el.Edit === true ||
+            el.Delete === true ||
+            el.Approval === true ||
+            el.Post === true
+        );
+    
+        const removeRid = filteredList.map((el:any) => {
+          delete el.RID;
+          return el;
+        });
+    
+        const payload = {
+          Header: { ...model },
+          Details: [...removeRid],
+        };
+    
+        if (checkRequired(formElem, model)) {
+          if (filteredList.length > 0) {
             setProperty({ ...property, saveLoading: true });
-            UserService.Save({ ...updated }, updated.Id)
-                .then((res: any) => {
-                    setProperty({ ...property, saveLoading: false });
-                    displayError(res.message, "success");
-                    goBack();
-                })
-                .catch((err: any) => {
-                    setProperty({ ...property, saveLoading: false });
-                    displayError(err.message, "error");
-                });
+            RolesService.Save(payload, model.rowID)
+              .then((res:any) => {
+                setProperty({ ...property, saveLoading: false });
+                displayError(res.message, "success");
+                goBack();
+              })
+              .catch((err) => {
+                setProperty({ ...property, saveLoading: false });
+                displayError(err.message, "error");
+              });
+          } else {
+            displayError("Please select at least one Role Detail",'error');
+          }
         }
-
-    };
+      };
 
     const getDataById = (id: any) => {
-        setProperty({ ...property, saveLoading: true });
-        UserService.GetOne(id)
+        setProperty({ ...property, loading: true });
+        RolesService.GetOne(id)
             .then((res: any) => {
-
-
-                setModel({
-                    ...res.data,
-                    Roles1: res.data.Roles.map((r: any) => r.RoleName).join(','),
-                    Locations1: res.data.Locations.map((l: any) => l.Location).join(',')
-                });
-                setProperty({ ...property, saveLoading: false });
+                const { Header, Details } = res.data;
+                setModel({ ...Header });
+                setFetchedRights([...Details]);
+                setProperty({ ...property, loading: false });
             })
-            .catch((err) => {
-                setProperty({ ...property, saveLoading: false });
+            .catch((error) => {
+                displayError(error.message, 'error');
+                setProperty({ ...property, loading: false });
             });
     };
     const updateSingleCheckbox = (index: any, right: any, value: any) => {
@@ -164,50 +181,50 @@ export default function RoleForm() {
             : false;
     };
     const handleList = (x: any, index: any) => {
-        
+
         setProperty({ ...property, loading: true });
         const updatedFetchedRights = [...fetchedRights];
-        
-        x.forEach((el:any,i:any)=>(
-            updatedFetchedRights.map((fr:any)=>{
-                if(el.ControlID === fr.ControlID){
+
+        x.forEach((el: any, i: any) => (
+            updatedFetchedRights.map((fr: any) => {
+                if (el.ControlID === fr.ControlID) {
                     // console.log(x,i,fr);
                     x[i] = fr
                 }
             })
         ))
-        console.log(x);
-        
+
+
         // x.forEach((el: any) => {
         //     const i = updatedFetchedRights.findIndex(
         //         (e) => e.ControlID === el.ControlID
         //     );
 
-            // console.log(x)
-            // if (i > -1) {
-            //     el.Create = updatedFetchedRights[i].Create;
-            //     el.View = updatedFetchedRights[i].View;
-            //     el.Edit = updatedFetchedRights[i].Edit;
-            //     el.Delete = updatedFetchedRights[i].Delete;
-            //     el.Approval = updatedFetchedRights[i].Approval;
-            //     el.Post = updatedFetchedRights[i].Post;
-            // } else {
-            //     el.Create = false;
-            //     el.View = false;
-            //     el.Edit = false;
-            //     el.Delete = false;
-            //     el.Approval = false;
-            //     el.Post = false;
-            // }
+        // console.log(x)
+        // if (i > -1) {
+        //     el.Create = updatedFetchedRights[i].Create;
+        //     el.View = updatedFetchedRights[i].View;
+        //     el.Edit = updatedFetchedRights[i].Edit;
+        //     el.Delete = updatedFetchedRights[i].Delete;
+        //     el.Approval = updatedFetchedRights[i].Approval;
+        //     el.Post = updatedFetchedRights[i].Post;
+        // } else {
+        //     el.Create = false;
+        //     el.View = false;
+        //     el.Edit = false;
+        //     el.Delete = false;
+        //     el.Approval = false;
+        //     el.Post = false;
+        // }
         // });
         setTimeout(() => {
-              setProperty({ ...property, loading: false });
+            setProperty({ ...property, loading: false });
         }, 500);
         setFormRoles(x);
         setSelectedIndex(index);
     };
-   
-    
+
+
     useEffect(() => {
         // setScreenRole(checkRole(Id));
         const moduleName = Object.keys(module)[0];
@@ -218,13 +235,8 @@ export default function RoleForm() {
             getDataById(params.id);
         }
     }, []);
-    // useLayoutEffect(() => {
-    //     const moduleName = Object.keys(module)[selectedIndex];
-    //     if (moduleName) {
-    //         handleList(module[moduleName], selectedIndex);
-    //     }
-    // }, [selectedIndex, fetchedRights]);
-    console.log(formRoles)
+
+ 
     return <>
         <div>
 
@@ -265,10 +277,10 @@ export default function RoleForm() {
                             </MenuList>
                         </div>
                         <div className="col-10_sm-12">
-                            {property.loading?<FALoader/>:<BAFormGrid
+                            {property.loading ? <FALoader /> : <BAFormGrid
                                 roles={true}
                                 disabledAddRow={true}
-                                setDatasource={(arr: any) =>  setFormRoles([...arr])}
+                                setDatasource={(arr: any) => setFormRoles([...arr])}
                                 datasource={formRoles}
                                 gridCols={[
                                     {
@@ -313,40 +325,28 @@ export default function RoleForm() {
                                                 }}
                                             >
                                                 Create
-{/*     
+                                                {/*     
                                                 <BACheckBox
                                                     // checked={isAllChecked("Create")}
                                                     checked={true}
 
                                                     onChange={() => handleRights("Create")}
                                                 /> */}
-                                               
+
                                             </div>
                                         ),
-                                        displayField:(el:any,i:any)=>
-                                           
-                                            {
-                                           return <BACheckBox
-                                            // checked={isAllChecked("Create")}
-                                            checked={el['Create']}
+                                        displayField: (el: any, i: any) => {
+                                            return <BACheckBox
+                                                // checked={isAllChecked("Create")}
+                                                checked={el['Create']}
 
-                                            onChange={(e:any) => {
-                                               
-                                                updateSingleCheckbox(i, "Create", e.target.checked)
-                                            }}
-                                        />
+                                                onChange={(e: any) => {
+
+                                                    updateSingleCheckbox(i, "Create", e.target.checked)
+                                                }}
+                                            />
                                         },
-                                        // element: {
-                                        //     col: 12,
-                                        //     elementType: "checkbox",
-                                        //     key: "Create",
-                                        //     label: "",
-                                        //     ChangeEv: (e: any, val: any, elem: any, index: any) => {
-                                               
-                                        //         updateSingleCheckbox(index, "Create", val);
-                                        //         // handleRights("Create");
-                                        //     },
-                                        // },
+
                                     },
                                     {
                                         key: "View",
@@ -360,21 +360,21 @@ export default function RoleForm() {
                                                     alignItems: "center",
                                                 }}
                                             >
-                                                <BACheckBox
-                                                    checked={isAllChecked("View")}
-                                                    onChange={() => handleRights("View")}
-                                                />
-                                                
+                                                View
+
+
                                             </div>
                                         ),
-                                        element: {
-                                            col: 12,
-                                            elementType: "checkbox",
-                                            key: "View",
-                                            label: "",
-                                            ChangeEv: (e: any, val: any, elem: any, index: any) => {
-                                                updateSingleCheckbox(index, "View", val);
-                                            },
+                                        displayField: (el: any, i: any) => {
+                                            return <BACheckBox
+
+                                                checked={el['View']}
+
+                                                onChange={(e: any) => {
+
+                                                    updateSingleCheckbox(i, "View", e.target.checked)
+                                                }}
+                                            />
                                         },
                                     },
                                     {
@@ -389,21 +389,21 @@ export default function RoleForm() {
                                                     alignItems: "center",
                                                 }}
                                             >
-                                                <BACheckBox
-                                                    checked={isAllChecked("Edit")}
-                                                    onChange={() => handleRights("Edit")}
-                                                />
-                                                
+                                                Edit
+
+
                                             </div>
                                         ),
-                                        element: {
-                                            col: 12,
-                                            elementType: "checkbox",
-                                            key: "Edit",
-                                            label: "",
-                                            ChangeEv: (e: any, val: any, elem: any, index: any) => {
-                                                updateSingleCheckbox(index, "Edit", val);
-                                            },
+                                        displayField: (el: any, i: any) => {
+                                            return <BACheckBox
+
+                                                checked={el['Edit']}
+
+                                                onChange={(e: any) => {
+
+                                                    updateSingleCheckbox(i, "Edit", e.target.checked)
+                                                }}
+                                            />
                                         },
                                     },
                                     {
@@ -418,21 +418,21 @@ export default function RoleForm() {
                                                     alignItems: "center",
                                                 }}
                                             >
-                                                <BACheckBox
-                                                    checked={isAllChecked("Delete")}
-                                                    onChange={() => handleRights("Delete")}
-                                                />
-                                                
+                                                Delete
+
+
                                             </div>
                                         ),
-                                        element: {
-                                            col: 12,
-                                            elementType: "checkbox",
-                                            key: "Delete",
-                                            label: "",
-                                            ChangeEv: (e: any, val: any, elem: any, index: any) => {
-                                                updateSingleCheckbox(index, "Delete", val);
-                                            },
+                                        displayField: (el: any, i: any) => {
+                                            return <BACheckBox
+
+                                                checked={el['Delete']}
+
+                                                onChange={(e: any) => {
+
+                                                    updateSingleCheckbox(i, "Delete", e.target.checked)
+                                                }}
+                                            />
                                         },
                                     },
                                     {
@@ -447,21 +447,21 @@ export default function RoleForm() {
                                                     alignItems: "center",
                                                 }}
                                             >
-                                                <BACheckBox
-                                                    checked={isAllChecked("Approval")}
-                                                    onChange={() => handleRights("Approval")}
-                                                />
-                                                
+                                                Approval
+
+
                                             </div>
                                         ),
-                                        element: {
-                                            col: 12,
-                                            elementType: "checkbox",
-                                            key: "Approval",
-                                            label: "",
-                                            ChangeEv: (e: any, val: any, elem: any, index: any) => {
-                                                updateSingleCheckbox(index, "Approval", val);
-                                            },
+                                        displayField: (el: any, i: any) => {
+                                            return <BACheckBox
+
+                                                checked={el['Approval']}
+
+                                                onChange={(e: any) => {
+
+                                                    updateSingleCheckbox(i, "Approval", e.target.checked)
+                                                }}
+                                            />
                                         },
                                     },
                                     {
@@ -476,26 +476,26 @@ export default function RoleForm() {
                                                     alignItems: "center",
                                                 }}
                                             >
-                                                <BACheckBox
-                                                    checked={isAllChecked("Post")}
-                                                    onChange={() => handleRights("Post")}
-                                                />
-                                                
+                                                Post
+
+
                                             </div>
                                         ),
-                                        element: {
-                                            col: 12,
-                                            elementType: "checkbox",
-                                            key: "Post",
-                                            label: "",
-                                            ChangeEv: (e: any, val: any, elem: any, index: any) => {
-                                                updateSingleCheckbox(index, "Post", val);
-                                            },
+                                        displayField: (el: any, i: any) => {
+                                            return <BACheckBox
+
+                                                checked={el['Post']}
+
+                                                onChange={(e: any) => {
+
+                                                    updateSingleCheckbox(i, "Post", e.target.checked)
+                                                }}
+                                            />
                                         },
                                     },
                                 ]}
                             />}
-                            
+
                         </div>
                     </div>
 

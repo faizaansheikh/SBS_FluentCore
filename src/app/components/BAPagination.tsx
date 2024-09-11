@@ -109,7 +109,7 @@ export default function BAPagination(props: any) {
                 </div>
             </div>
 
-            {flag !== 'lookup' && <div style={{ fontSize: '20px', marginRight: '13px' }}>Total Records: {totalCount}</div>}
+            {flag !== 'lookup' && <div style={{ fontSize: '17px', marginRight: '13px' }}>Total Records: {totalCount}</div>}
         </div>
     )
 }

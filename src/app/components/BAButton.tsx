@@ -1,6 +1,6 @@
 "use client"
 import * as React from "react";
-import { makeStyles, Button } from "@fluentui/react-components";
+import { makeStyles, Button, tokens } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
     innerWrapper: {
@@ -13,7 +13,9 @@ const useStyles = makeStyles({
         rowGap: "15px",
     },
     btn: {
-        border:'none'
+        border:'none',
+        // backgroundColor:tokens.colorBrandBackground,
+        // color:'whitesmoke'
     }
 });
 

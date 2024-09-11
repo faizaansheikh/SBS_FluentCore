@@ -28,7 +28,8 @@ import { GeneralCoreService } from "../config/GeneralCoreService";
 import BAPagination from "./BAPagination";
 import FALoader from "./FALoader";
 import { useRouter } from "next/navigation";
-
+import Image from "next/image";
+import nodata from '../assets/images/nodata.png'
 
 
 
@@ -107,7 +108,7 @@ export const BASetupGrid = (props: any) => {
     pageNo: 1,
     selector: config.map((x: any) => x.field).join(","),
   };
-  let getData = (object?:any,filter?: any) => {
+  let getData = (object?: any, filter?: any) => {
     if (filter) {
       setProperty({ ...property, filterLoading: true })
     } else {
@@ -124,7 +125,7 @@ export const BASetupGrid = (props: any) => {
       .Register(obj)
       .then((res: any) => {
 
-        setDatasource([...res.data.rows]);
+        // setDatasource([...res.data.rows]);
         setTotalRecords(res.data.TotalCount);
         if (filter) {
           setProperty({ ...property, filterLoading: false })
@@ -172,103 +173,119 @@ export const BASetupGrid = (props: any) => {
     <div className="p-2">
 
       <div >
-        <BAScreenHeader title={title} onClick={addEdit} apiCall={getData} setState={setGridSearchObj} loading={property} setLoading={setProperty}/>
+        <BAScreenHeader title={title} onClick={addEdit} apiCall={getData} setState={setGridSearchObj} loading={property} setLoading={setProperty} />
       </div>
       {property.loading ? <FALoader /> :
         <Table
           {...keyboardNavAttr}
           role="grid"
           aria-label="Table with grid keyboard navigation"
-          style={{ minWidth: "620px", marginTop: '10px', backgroundColor: tokens.colorNeutralBackground1Selected }}
+          style={{
+            minWidth: "620px", marginTop: '10px', backgroundColor: tokens.colorNeutralBackground1Selected,
+
+
+          }}
         >
 
-          <TableHeader style={{ height: '20px', borderBottom: '2px solid black' }}>
 
-            <TableRow>
-              {gridCols.map((el: any, i: any) => (
-                <TableHeaderCell key={i}
+
+          {datasource.length === 0 ? <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column'
+          }}>
+            <Image alt='' src={nodata} style={{ width: '600px', height: '' }} />
+          </div> : <>
+            <TableHeader style={{ height: '20px', borderBottom: '2px solid black' }}>
+
+              <TableRow>
+                {gridCols.map((el: any, i: any) => (
+                  <TableHeaderCell key={i}
+                    style={{
+                      paddingLeft: i === 0 ? '25px' : '', cursor: i === 0 ? 'pointer' : '',
+
+                    }}
+                    onMouseEnter={() => {
+                      setIsHovered(true)
+                      setHeaderName(el.title)
+                    }}
+                    onMouseLeave={() => setIsHovered(false)}
+                  >
+
+                    <TableCellLayout style={{ color: tokens.colorNeutralStrokeAccessibleHover, padding: '12px 0px' }}>
+
+                      {el.title} {(isHovered && headerName === el.title) && <span onClick={() => handleFilter(el.title)} className="cursor-pointer font-bold text-md">x</span>}
+                    </TableCellLayout>
+
+
+
+
+                  </TableHeaderCell>
+                ))}
+
+
+              </TableRow>
+
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+
+                {gridCols.map((x: any) => <TableCell
                   style={{
-                    paddingLeft: i === 0 ? '25px' : '', cursor: i === 0 ? 'pointer' : '',
-
+                    // paddingLeft: '25px',
+                    // color: i === 0 ? tokens.colorNeutralForeground2BrandHover : ''
                   }}
-                  onMouseEnter={() => {
-                    setIsHovered(true)
-                    setHeaderName(el.title)
-                  }}
-                  onMouseLeave={() => setIsHovered(false)}
+                  tabIndex={0}
+                  role="gridcell"
+                // onClick={(e: any) => handleEdit(i)}
                 >
+                  {" "}
+                  <Input appearance="underline"
+                    onBlur={(e: any) => {
 
-                  <TableCellLayout style={{ color: tokens.colorNeutralStrokeAccessibleHover, padding: '12px 0px' }}>
+                      gridSearchObj[x.field] = e.target.value
+                      setGridSearchObj({ ...gridSearchObj })
+                      getData(null, 'filter')
+                    }}
+                  />
+                </TableCell>)}
 
-                    {el.title} {(isHovered && headerName === el.title) && <span onClick={() => handleFilter(el.title)} className="cursor-pointer font-bold text-md">x</span>}
-                  </TableCellLayout>
+              </TableRow>
+              {property.filterLoading ? <FALoader /> : datasource && datasource.length && datasource.map((item: any, i: any) => (
+
+                <TableRow key={i}>
+
+                  {gridCols.map((x: any, ind: any) => (
+                    <TableCell
+                      style={{
+                        paddingLeft: ind === 0 ? '25px' : '', cursor: ind === 0 ? 'pointer' : '',
+                        color: ind === 0 ? tokens.colorNeutralForeground2BrandHover : ''
+                      }}
+                      tabIndex={0}
+                      role="gridcell"
+                      onClick={(e: any) => handleEdit(i)}
+                    >
+                      {/* {x.field === 'IsActive' && renderTag(x,item)} */}
+                      {renderTag(x, item)}
+                      {item[x.field]}
+                    </TableCell>
 
 
+                  ))}
 
-
-                </TableHeaderCell>
+                </TableRow>
               ))}
 
 
-            </TableRow>
 
-          </TableHeader>
-
-          <TableBody>
-            <TableRow>
-
-              {gridCols.map((x: any) => <TableCell
-                style={{
-                  // paddingLeft: '25px',
-                  // color: i === 0 ? tokens.colorNeutralForeground2BrandHover : ''
-                }}
-                tabIndex={0}
-                role="gridcell"
-              // onClick={(e: any) => handleEdit(i)}
-              >
-                {" "}
-                <Input appearance="underline"
-                  onBlur={(e: any) => {
-
-                    gridSearchObj[x.field] = e.target.value
-                    setGridSearchObj({ ...gridSearchObj })
-                    getData(null,'filter')
-                  }}
-                />
-              </TableCell>)}
-
-            </TableRow>
-            {property.filterLoading ? <FALoader /> : datasource && datasource.length && datasource.map((item: any, i: any) => (
-
-              <TableRow key={i}>
-
-                {gridCols.map((x: any, ind: any) => (
-                  <TableCell
-                    style={{
-                      paddingLeft: ind === 0 ? '25px' : '', cursor: ind === 0 ? 'pointer' : '',
-                      color: ind === 0 ? tokens.colorNeutralForeground2BrandHover : ''
-                    }}
-                    tabIndex={0}
-                    role="gridcell"
-                    onClick={(e: any) => handleEdit(i)}
-                  >
-                    {/* {x.field === 'IsActive' && renderTag(x,item)} */}
-                    {renderTag(x, item)}
-                    {item[x.field]}
-                  </TableCell>
+            </TableBody>
+          </>
+          }
 
 
-                ))}
-             
-              </TableRow>
-            ))}
-
-
-
-          </TableBody>
         </Table>}
-
-      <BAPagination
+          {datasource.length !== 0 &&  <BAPagination
         totalCount={totalRecords}
         onPageChange={(page: any) => {
           SearchCriteria.pageNo = page;
@@ -276,7 +293,8 @@ export const BASetupGrid = (props: any) => {
           getData()
 
         }}
-      />
+      />}
+     
     </div>
   );
 };
